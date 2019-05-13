@@ -11,6 +11,7 @@
     - [[#utils][Utils]]
       - [[#camelcase][camelCase]]
       - [[#kebabcase][kebabCase]]
+      - [[#merge][merge]]
 
 ** License
 
@@ -149,6 +150,156 @@ ava ("given a string with lowercase characters", (t) => {
   const expect = "background"
 
   t.is (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
+**** merge
+
+#+HTML: <details>
+#+begin_src js :tangle src/utils/merge.js
+/* eslint-disable no-use-before-define */
+
+export const isArr = Array.isArray
+
+export function isObj (value) {
+  return typeof value === "object"
+}
+
+export function canMerge (value) {
+  return (
+    Boolean (value) &&
+    isObj (value) &&
+    !(/^\[object (?:Date|RegExp)\]$/u).test (
+      Object.prototype.toString.call (value)
+    )
+  )
+}
+
+export function emptyObj (value) {
+  return isArr (value) ? [] : {}
+}
+
+export function cloneObj (value) {
+  return canMerge (value) ? merge (emptyObj (value), value) : value
+}
+
+export function mergeArr (target, source) {
+  return (isArr (target) && isArr (source)
+    ? target.concat (source)
+    : source
+  ).map (cloneObj)
+}
+
+export function mergeObj (target, source) {
+  for (const key of Object.keys (source)) {
+    target[key] = merge (
+      Object.prototype.hasOwnProperty.call (target, key) ? target[key] : {},
+      source[key]
+    )
+  }
+
+  return target
+}
+
+/**
+ * This method recursively merges own enumerable string keyed properties of
+ * source objects into a new empty object. Array and plain object properties
+ * are merged recursively. Other objects and value types are overridden by
+ * assignment. Source objects are applied from left to right. Subsequent
+ * sources overwrite property assignments of previous sources.
+ *
+ * @param  {...Object} sources
+ * - The source objects.
+ *
+ * @returns {Object}
+ *   Returns `object`.
+ */
+
+export function merge (... sources) {
+  return sources.reduce (function (target, source) {
+    if (isArr (source)) {
+      return mergeArr (target, source)
+    } else if (canMerge (source)) {
+      return mergeObj (target, source)
+    }
+
+    return cloneObj (source)
+  }, {})
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/utils/merge.test.js
+
+import ava from "ava"
+import { emptyObj, merge } from "./merge.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = merge ()
+  const expect = {}
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an array as value", (t) => {
+  const actual = emptyObj (["a"])
+  const expect = []
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object as value", (t) => {
+  const actual = emptyObj ({ "a": null })
+  const expect = {}
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given two objects", (t) => {
+  const actual = merge ({ "a": null }, { "b": null })
+  const expect = { "a": null, "b": null }
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given two arrays", (t) => {
+  const actual = merge (["a"], ["b"])
+  const expect = ["a", "b"]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("merge existing simple keys in target at the roots", (t) => {
+  const actual = merge (
+    { "key1": "value1", "key3": "value3" },
+    { "key1": "changed", "key2": "value2" }
+  )
+
+  const expect = {
+    "key1": "changed",
+    "key2": "value2",
+    "key3": "value3"
+  }
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("should work on array of objects", (t) => {
+  const actual = merge (
+    [{ "key1": ["one", "two"] }, { "key3": ["four"] }],
+    [{ "key1": ["one", "three"], "key2": ["one"] }, { "key3": ["five"] }]
+  )
+
+  const expect = [
+    { "key1": ["one", "two"] },
+    { "key3": ["four"] },
+    { "key1": ["one", "three"], "key2": ["one"] },
+    { "key3": ["five"] }
+  ]
+
+  t.deepEqual (actual, expect)
 })
 #+end_src
 #+HTML: </details>
