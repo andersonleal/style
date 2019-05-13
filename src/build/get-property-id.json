@@ -1,0 +1,691 @@
+{
+  "variables": [
+    "%*",
+    "--*"
+  ],
+
+  "cascade": [
+    "all"
+  ],
+
+  "writingModes": [
+    "direction",
+    "unicodeBidi",
+    "writingMode",
+    "textOrientation",
+    "glyphOrientationVertical",
+    "textCombineUpright"
+  ],
+
+  "text": [
+    "textTransform",
+
+    "whiteSpace",
+    "textSpaceCollapse",
+    "textSpaceTrim",
+    "tabSize",
+
+    "wordBreak",
+    "lineBreak",
+    "hyphens",
+    "overflowWrap",
+    "wordWrap",
+
+    "textWrap",
+    "wrapBefore",
+    "wrapAfter",
+    "wrapInside",
+
+    "hyphenateCharacter",
+    "hyphenateLimitZone",
+    "hyphenateLimitChars",
+    "hyphenateLimitLines",
+    "hyphenateLimitLast",
+
+    "textAlign",
+    "textAlignAll",
+    "textAlignLast",
+    "textJustify",
+    "textGroupAlign",
+
+    "wordSpacing",
+    "letterSpacing",
+    "linePadding",
+    "textSpacing",
+
+    "textIndent",
+    "hangingPunctuation"
+  ],
+
+  "textDecor": [
+    "textDecoration",
+    "textDecorationLine",
+    "textDecorationStyle",
+    "textDecorationColor",
+
+    "textDecorationWidth",
+    "textDecorationSkip",
+    "textDecorationSkipInk",
+
+    "textUnderlineOffset",
+    "textUnderlinePosition",
+
+    "textEmphasis",
+    "textEmphasisStyle",
+    "textEmphasisColor",
+
+    "textEmphasisPosition",
+
+    "textEmphasisSkip",
+
+    "textShadow"
+  ],
+
+  "fonts": [
+    "src",
+
+    "font",
+    "fontStyle",
+    "fontVariant",
+    "fontWeight",
+    "fontStretch",
+    "fontSize",
+    "lineHeight",
+    "fontFamily",
+
+    "fontMinSize",
+    "fontMaxSize",
+    "fontSizeAdjust",
+
+    "fontSynthesis",
+    "fontSynthesisWeight",
+    "fontSynthesisStyle",
+    "fontSynthesisSmallCaps",
+
+    "unicodeRange",
+
+    "fontFeatureSettings",
+    "fontVariationSettings",
+    "fontLanguageOverride",
+
+    "fontKerning",
+
+    "fontVariantLigatures",
+    "fontVariantPosition",
+    "fontVariantCaps",
+    "fontVariantNumeric",
+    "fontVariantAlternates",
+    "fontVariantEastAsian",
+
+    "fontOpticalSizing",
+
+    "fontPalette",
+    "fontVariantEmoji"
+  ],
+
+  "content": [
+    "content",
+    "quotes",
+    "stringSet",
+    "bookmarkLevel",
+    "bookmarkLabel",
+    "bookmarkState"
+  ],
+
+  "gcpm": [
+    "running",
+    "footnoteDisplay",
+    "footnotePolicy"
+  ],
+
+  "ui": [
+    "outline",
+    "outlineColor",
+    "outlineStyle",
+    "outlineWidth",
+
+    "outlineOffset",
+    "resize",
+    "textOverflow",
+    "cursor",
+
+    "caret",
+    "caretColor",
+    "caretShape",
+
+    "navUp",
+    "navRight",
+    "navDown",
+    "navLeft",
+
+    "userSelect",
+    "appearance"
+  ],
+
+  "position": [
+    "position",
+
+    "top",
+    "right",
+    "bottom",
+    "left",
+
+    "offsetBefore",
+    "offsetAfter",
+    "offsetStart",
+    "offsetEnd",
+
+    "zIndex"
+  ],
+
+  "display": [
+    "display"
+  ],
+
+  "contain": [
+    "contain"
+  ],
+
+  "sizing": [
+    "width",
+    "height",
+
+    "minWidth",
+    "minHeight",
+
+    "maxWidth",
+    "maxHeight",
+
+    "boxSizing"
+  ],
+
+  "css2": [
+    "visibility",
+
+    "pageBreakBefore",
+    "pageBreakAfter",
+    "pageBreakInside"
+  ],
+
+  "box": [
+    "margin",
+    "marginTop",
+    "marginRight",
+    "marginBottom",
+    "marginLeft",
+
+    "marginTrim",
+
+    "padding",
+    "paddingTop",
+    "paddingRight",
+    "paddingBottom",
+    "paddingLeft"
+  ],
+
+  "inline": [
+    "dominantBaseline",
+    "verticalAlign",
+    "alignmentBaseline",
+    "baselineShift",
+
+    "inlineSizing",
+
+    "initialLetters",
+    "initialLettersAlign",
+    "initialLettersWrap"
+  ],
+
+  "lists": [
+    "listStyle",
+    "listStyleType",
+    "listStylePosition",
+    "listStyleImage",
+
+    "markerSide",
+
+    "counterReset",
+    "counterSet",
+    "counterIncrement"
+  ],
+
+  "overflow": [
+    "overflow",
+    "overflowX",
+    "overflowY",
+
+    "overflowBlock",
+    "overflowInline",
+
+    "blockOverflow",
+    "lineClamp",
+    "maxLines",
+    "continue"
+  ],
+
+  "tables": [
+    "tableLayout",
+    "borderCollapse",
+    "borderSpacing",
+    "captionSide",
+
+    "emptyCells"
+  ],
+
+  "flexbox": [
+    "flexFlow",
+    "flexDirection",
+    "flexWrap",
+
+    "order",
+
+    "flex",
+    "flexGrow",
+    "flexShrink",
+    "flexBasis"
+  ],
+
+  "align": [
+    "placeContent",
+    "alignContent",
+    "justifyContent",
+
+    "placeItems",
+    "alignItems",
+    "justifyItems",
+
+    "placeSelf",
+    "alignSelf",
+    "justifySelf",
+
+    "gap",
+    "rowGap",
+    "columnGap"
+  ],
+
+  "multicol": [
+    "columns",
+    "columnWidth",
+    "columnCount",
+
+    "columnRule",
+    "columnRuleWidth",
+    "columnRuleStyle",
+    "columnRuleColor",
+
+    "columnSpan",
+    "columnFill"
+  ],
+
+  "regions": [
+    "flowInto",
+    "flowFrom",
+    "regionFragment"
+  ],
+
+  "break": [
+    "breakBefore",
+    "breakAfter",
+    "breakInside",
+    "orphans",
+    "widows",
+    "boxDecorationBreak"
+  ],
+
+  "grid": [
+    "grid",
+
+    "gridTemplate",
+    "gridTemplateRows",
+    "gridTemplateColumns",
+    "gridTemplateAreas",
+
+    "gridAutoFlow",
+    "gridAutoRows",
+    "gridAutoColumns",
+
+    "gridArea",
+
+    "gridRow",
+    "gridRowStart",
+    "gridRowEnd",
+
+    "gridColumn",
+    "gridColumnStart",
+    "gridColumnEnd"
+  ],
+
+  "ruby": [
+    "rubyPosition",
+    "rubyMerge",
+    "rubyAlign"
+  ],
+
+  "logical": [
+    "float",
+    "clear",
+
+    "blockSize",
+    "inlineSize",
+    "minBlockSize",
+    "minInlineSize",
+    "maxBlockSize",
+    "maxInlineSize",
+
+    "marginBlock",
+    "marginBlockStart",
+    "marginBlockEnd",
+
+    "marginInline",
+    "marginInlineStart",
+    "marginInlineEnd",
+
+    "inset",
+    "insetBlock",
+    "insetBlockStart",
+    "insetBlockEnd",
+    "insetInline",
+    "insetInlineStart",
+    "insetInlineEnd",
+
+    "paddingBlock",
+    "paddingBlockStart",
+    "paddingBlockEnd",
+    "paddingInline",
+    "paddingInlineStart",
+    "paddingInlineEnd",
+
+    "borderBlockWidth",
+    "borderBlockStartWidth",
+    "borderBlockEndWidth",
+    "borderInlineWidth",
+    "borderInlineStartWidth",
+    "borderInlineEndWidth",
+
+    "borderBlockStyle",
+    "borderBlockStartStyle",
+    "borderBlockEndStyle",
+    "borderInlineStyle",
+    "borderInlineStartStyle",
+    "borderInlineEndStyle",
+
+    "borderBlockColor",
+    "borderBlockStartColor",
+    "borderBlockEndColor",
+    "borderInlineColor",
+    "borderInlineStartColor",
+    "borderInlineEndColor",
+
+    "borderBlock",
+    "borderBlockStart",
+    "borderBlockEnd",
+    "borderInline",
+    "borderInlineStart",
+    "borderInlineEnd",
+
+    "borderStartStartRadius",
+    "borderStartEndRadius",
+    "borderEndStartRadius",
+    "borderEndEndRadius"
+  ],
+
+  "fillStroke": [
+    "fillRule",
+    "fillBreak",
+
+    "fill",
+    "fillColor",
+    "fillImage",
+    "fillOrigin",
+    "fillPosition",
+    "fillSize",
+    "fillRepeat",
+
+    "fillOpacity",
+
+    "strokeWidth",
+    "strokeAlign",
+    "strokeLinecap",
+    "strokeLinejoin",
+    "strokeMiterlimit",
+    "strokeBreak",
+    "strokeDasharray",
+    "strokeDashoffset",
+    "strokeDashCorner",
+    "strokeDashJustify",
+
+    "stroke",
+    "strokeColor",
+    "strokeImage",
+    "strokeOrigin",
+    "strokePosition",
+    "strokeSize",
+    "strokeRepeat",
+
+    "strokeOpacity"
+  ],
+
+  "svgMarkers": [
+    "marker",
+    "markerStart",
+    "markerMid",
+    "markerEnd",
+
+    "markerSegment",
+    "markerPattern",
+
+    "markerKnockoutLeft",
+    "markerKnockoutRight"
+  ],
+
+  "svgTiny": [
+    "vectorEffect",
+
+    "colorRendering",
+    "shapeRendering",
+    "textRendering",
+    "imageRendering",
+    "bufferedRendering",
+
+    "stopColor",
+    "stopOpacity"
+  ],
+
+  "color": [
+    "color",
+    "opacity",
+
+    "colorAdjust"
+  ],
+
+  "images": [
+    "objectFit",
+    "objectPosition",
+
+    "imageResolution",
+    "imageOrientation",
+    "imageRendering"
+  ],
+
+  "backgrounds": [
+    "background",
+    "backgroundColor",
+    "backgroundImage",
+    "backgroundPosition",
+    "backgroundPositionX",
+    "backgroundPositionY",
+    "backgroundSize",
+    "backgroundRepeat",
+    "backgroundAttachment",
+    "backgroundOrigin",
+    "backgroundClip",
+
+    "border",
+    "borderTop",
+    "borderRight",
+    "borderBottom",
+    "borderLeft",
+
+    "borderWidth",
+    "borderTopWidth",
+    "borderRightWidth",
+    "borderBottomWidth",
+    "borderLeftWidth",
+
+    "borderStyle",
+    "borderTopStyle",
+    "borderRightStyle",
+    "borderBottomStyle",
+    "borderLeftStyle",
+
+    "borderColor",
+    "borderTopColor",
+    "borderRightColor",
+    "borderBottomColor",
+    "borderLeftColor",
+
+    "borderRadius",
+    "borderTopLeftRadius",
+    "borderTopRightRadius",
+    "borderBottomRightRadius",
+    "borderBottomLeftRadius",
+
+    "borderImage",
+    "borderImageSource",
+    "borderImageSlice",
+    "borderImageWidth",
+    "borderImageOutset",
+    "borderImageRepeat",
+
+    "boxShadow"
+  ],
+
+  "masking": [
+    "clip",
+    "clipPath",
+    "clipRule",
+
+    "mask",
+    "maskImage",
+    "maskPosition",
+    "maskSize",
+    "maskRepeat",
+    "maskOrigin",
+    "maskClip",
+    "maskComposite",
+    "maskMode",
+
+    "maskBorder",
+    "maskBorderSource",
+    "maskBorderSlice",
+    "maskBorderWidth",
+    "maskBorderOutset",
+    "maskBorderRepeat",
+    "maskBorderMode",
+
+    "maskType"
+  ],
+
+  "shapes": [
+    "shapeOutside",
+    "shapeImageThreshold",
+    "shapeMargin"
+  ],
+
+  "filterEffects": [
+    "filter",
+    "floodColor",
+    "floodOpacity",
+    "colorInterpolationFilters",
+    "lightingColor"
+  ],
+
+  "compositing": [
+    "mixBlendMode",
+    "isolation",
+    "backgroundBlendMode"
+  ],
+
+  "transitions": [
+    "transition",
+    "transitionProperty",
+    "transitionDuration",
+    "transitionTimingFunction",
+    "transitionDelay"
+  ],
+
+  "transforms": [
+    "transform",
+    "transformOrigin",
+    "transformBox",
+    "transformStyle",
+
+    "perspective",
+    "perspectiveOrigin",
+    "backfaceVisibility"
+  ],
+
+  "animations": [
+    "animation",
+    "animationName",
+    "animationDuration",
+    "animationTimingFunction",
+    "animationDelay",
+    "animationIterationCount",
+    "animationDirection",
+    "animationFillMode",
+    "animationPlayState"
+  ],
+
+  "motion": [
+    "offset",
+    "offsetPosition",
+    "offsetPath",
+    "offsetDistance",
+    "offsetRotate",
+    "offsetAnchor"
+  ],
+
+  "willChange": [
+    "willChange"
+  ],
+
+  "scrollSnap": [
+    "scrollSnapType",
+
+    "scrollPadding",
+    "scrollPaddingTop",
+    "scrollPaddingRight",
+    "scrollPaddingBottom",
+    "scrollPaddingLeft",
+
+    "scrollPaddingBlock",
+    "scrollPaddingBlockStart",
+    "scrollPaddingBlockEnd",
+
+    "scrollPaddingInline",
+    "scrollPaddingInlineStart",
+    "scrollPaddingInlineEnd",
+
+    "scrollMargin",
+    "scrollMarginTop",
+    "scrollMarginRight",
+    "scrollMarginBottom",
+    "scrollMarginLeft",
+
+    "scrollMarginBlock",
+    "scrollMarginBlockStart",
+    "scrollMarginBlockEnd",
+
+    "scrollMarginInline",
+    "scrollMarginInlineStart",
+    "scrollMarginInlineEnd",
+
+    "scrollSnapAlign",
+    "scrollSnapStop"
+  ],
+
+  "cssomView": [
+    "scrollBehavior"
+  ]
+}

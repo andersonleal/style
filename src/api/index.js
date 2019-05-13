@@ -1,4 +1,5 @@
 export { css } from "./css.js"
+export { getPropertyId } from "../build/get-property-id.js"
 export { parseInput } from "../parse/parse-input.js"
 export { camelCase } from "../utils/camel-case.js"
 export { kebabCase } from "../utils/kebab-case.js"
