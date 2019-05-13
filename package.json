@@ -17,7 +17,7 @@
     ],
     "verbose": true
   },
-  "browser": "",
+  "browser": "web/style.js",
   "bugs": {
     "url": "https://github.com/ptb/style/issues"
   },
@@ -39,7 +39,9 @@
     "esm": "3.2.22",
     "graphql": "14.3.0",
     "nyc": "14.1.1",
-    "prettier-eslint-cli": "4.7.1"
+    "prettier-eslint-cli": "4.7.1",
+    "rollup": "1.11.3",
+    "rollup-plugin-terser": "4.0.4"
   },
   "eslintConfig": {
     "extends": [
@@ -58,11 +60,14 @@
       }
     }
   },
-  "files": [],
+  "files": [
+    "esm/style.js",
+    "umd/style.js"
+  ],
   "homepage": "https://github.com/ptb/style#readme",
   "keywords": [],
   "license": "Apache-2.0",
-  "main": "",
+  "main": "umd/style.js",
   "maintainers": [
     {
       "email": "pbosse@gmail.com",
@@ -70,7 +75,7 @@
       "url": "https://ptb.dev/"
     }
   ],
-  "module": "",
+  "module": "esm/style.js",
   "name": "@amory/style",
   "nyc": {
     "all": true,
@@ -119,6 +124,7 @@
   },
   "scripts": {
     "lint": "eslint './src/'",
+    "prepare": "rollup -c",
     "test": "nyc ava",
     "tidy": "prettier-eslint --write \"src/**/*.js\""
   },
