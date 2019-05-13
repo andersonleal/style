@@ -10,6 +10,7 @@
   - [[#source][Source]]
     - [[#utils][Utils]]
       - [[#camelcase][camelCase]]
+      - [[#kebabcase][kebabCase]]
 
 ** License
 
@@ -83,6 +84,68 @@ ava ("given a string in camel-case", (t) => {
 
 ava ("given a string in lowercase", (t) => {
   const actual = camelCase ("background")
+  const expect = "background"
+
+  t.is (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
+**** kebabCase
+
+#+HTML: <details>
+#+begin_src js :tangle src/utils/kebab-case.js
+/**
+ * Converts `string` to kebab case.
+ *
+ * @param {string} string
+ * - The string to convert.
+ *
+ * @returns {string}
+ *   The kebab cased string.
+ */
+
+export function kebabCase (string = "") {
+  return string.replace (/[A-Z]|^ms/gu, "-$&").toLowerCase ()
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/utils/kebab-case.test.js
+import ava from "ava"
+import { kebabCase } from "./kebab-case.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = kebabCase ()
+  const expect = ""
+
+  t.is (actual, expect)
+})
+
+ava ("given a string in camel-case", (t) => {
+  const actual = kebabCase ("backgroundColor")
+  const expect = "background-color"
+
+  t.is (actual, expect)
+})
+
+ava ("given a string beginning with 'ms-'", (t) => {
+  const actual = kebabCase ("msAccelerator")
+  const expect = "-ms-accelerator"
+
+  t.is (actual, expect)
+})
+
+ava ("given a string already in kebab-case", (t) => {
+  const actual = kebabCase ("background-color")
+  const expect = "background-color"
+
+  t.is (actual, expect)
+})
+
+ava ("given a string with lowercase characters", (t) => {
+  const actual = kebabCase ("background")
   const expect = "background"
 
   t.is (actual, expect)
