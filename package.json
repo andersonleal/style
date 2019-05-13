@@ -1,5 +1,22 @@
 {
   "author": "Peter T Bosse II <pbosse@gmail.com> (https://ptb.dev/)",
+  "ava": {
+    "babel": false,
+    "extensions": [
+      "js"
+    ],
+    "failFast": false,
+    "files": [
+      "src/**/*.test.js"
+    ],
+    "require": [
+      "esm"
+    ],
+    "sources": [
+      "src/**/*.js"
+    ],
+    "verbose": true
+  },
   "browser": "",
   "bugs": {
     "url": "https://github.com/ptb/style/issues"
@@ -7,6 +24,7 @@
   "description": "",
   "devDependencies": {
     "@amory/eslint-config": "latest",
+    "ava": "1.4.1",
     "babel-eslint": "10.0.1",
     "eslint": "5.16.0",
     "eslint-plugin-compat": "3.1.1",
@@ -18,7 +36,9 @@
     "eslint-plugin-promise": "4.1.1",
     "eslint-plugin-react": "7.13.0",
     "eslint-plugin-standard": "4.0.0",
-    "graphql": "14.3.0"
+    "esm": "3.2.22",
+    "graphql": "14.3.0",
+    "nyc": "14.1.1"
   },
   "eslintConfig": {
     "extends": [
@@ -51,6 +71,19 @@
   ],
   "module": "",
   "name": "@amory/style",
+  "nyc": {
+    "all": true,
+    "exclude": [
+      "src/**/*.test.js"
+    ],
+    "extension": [
+      ".js"
+    ],
+    "include": [
+      "src/**/*.js"
+    ],
+    "temp-dir": "/tmp/.nyc_output"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -66,7 +99,8 @@
     "url": "git+https://github.com/ptb/style.git"
   },
   "scripts": {
-    "lint": "eslint './src/'"
+    "lint": "eslint './src/'",
+    "test": "nyc ava"
   },
   "version": ""
 }
