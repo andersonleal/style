@@ -8,6 +8,8 @@
 - [[#amorystyle][@amory/style]]
   - [[#license][License]]
   - [[#source][Source]]
+    - [[#api][API]]
+      - [[#index][index]]
     - [[#utils][Utils]]
       - [[#camelcase][camelCase]]
       - [[#kebabcase][kebabCase]]
@@ -33,6 +35,28 @@ limitations under the License.
 #+end_quote
 
 ** Source
+
+*** API
+
+**** index
+
+#+HTML: <details>
+#+begin_src js :tangle src/api/index.js
+export { camelCase } from "../utils/camel-case.js"
+export { kebabCase } from "../utils/kebab-case.js"
+export {
+  canMerge,
+  cloneObj,
+  emptyObj,
+  isArr,
+  isObj,
+  merge,
+  mergeArr,
+  mergeObj
+} from "../utils/merge.js"
+export { toPairs } from "../utils/to-pairs.js"
+#+end_src
+#+HTML: </details>
 
 *** Utils
 
