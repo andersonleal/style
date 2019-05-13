@@ -9,6 +9,7 @@
   - [[#license][License]]
   - [[#source][Source]]
     - [[#api][API]]
+      - [[#css][css]]
       - [[#index][index]]
     - [[#parse][Parse]]
       - [[#parseinput][parseInput]]
@@ -40,10 +41,37 @@ limitations under the License.
 
 *** API
 
+**** css
+
+#+HTML: <details>
+#+begin_src js :tangle src/api/css.js
+import { parseInput } from "../parse/parse-input.js"
+
+export function css (params = {}) {
+  return parseInput ({ "input": params })
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/api/css.test.js
+import ava from "ava"
+import { css } from "./css.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = css ()
+  const expect = []
+
+  t.deepEqual (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
 **** index
 
 #+HTML: <details>
 #+begin_src js :tangle src/api/index.js
+export { css } from "./css.js"
 export { parseInput } from "../parse/parse-input.js"
 export { camelCase } from "../utils/camel-case.js"
 export { kebabCase } from "../utils/kebab-case.js"
