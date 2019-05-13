@@ -10,6 +10,8 @@
   - [[#source][Source]]
     - [[#api][API]]
       - [[#index][index]]
+    - [[#parse][Parse]]
+      - [[#parseinput][parseInput]]
     - [[#utils][Utils]]
       - [[#camelcase][camelCase]]
       - [[#kebabcase][kebabCase]]
@@ -42,6 +44,7 @@ limitations under the License.
 
 #+HTML: <details>
 #+begin_src js :tangle src/api/index.js
+export { parseInput } from "../parse/parse-input.js"
 export { camelCase } from "../utils/camel-case.js"
 export { kebabCase } from "../utils/kebab-case.js"
 export {
@@ -55,6 +58,104 @@ export {
   mergeObj
 } from "../utils/merge.js"
 export { toPairs } from "../utils/to-pairs.js"
+#+end_src
+#+HTML: </details>
+
+*** Parse
+
+**** parseInput
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-input.js
+import { camelCase } from "../utils/camel-case.js"
+import { kebabCase } from "../utils/kebab-case.js"
+import { toPairs } from "../utils/to-pairs.js"
+
+export function parseInput (params = {}) {
+  const emit = params.emit || true
+  const input = params.input || {}
+  const media = params.media || ""
+  const selectors = params.selectors || []
+
+  return toPairs (input).reduce (function (styles, style) {
+    const property = style[0]
+    const value = style[1]
+
+    return styles.concat ({
+      "block": [
+        {
+          [kebabCase (property)]: value
+        }
+      ],
+      "emit": emit,
+      "input": {
+        [property]: value
+      },
+      "media": media,
+      "property": camelCase (property),
+      "selectors": selectors,
+      "value": value
+    })
+  }, [])
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-input.test.js
+import ava from "ava"
+import { parseInput } from "./parse-input.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = parseInput ()
+  const expect = []
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with multiple properties and values", (t) => {
+  const actual = parseInput ({
+    "input": {
+      "backgroundColor": "#f00",
+      "display": "block"
+    }
+  })
+
+  const expect = [
+    {
+      "block": [
+        {
+          "background-color": "#f00"
+        }
+      ],
+      "emit": true,
+      "input": {
+        "backgroundColor": "#f00"
+      },
+      "media": "",
+      "property": "backgroundColor",
+      "selectors": [],
+      "value": "#f00"
+    },
+    {
+      "block": [
+        {
+          "display": "block"
+        }
+      ],
+      "emit": true,
+      "input": {
+        "display": "block"
+      },
+      "media": "",
+      "property": "display",
+      "selectors": [],
+      "value": "block"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
 #+end_src
 #+HTML: </details>
 
