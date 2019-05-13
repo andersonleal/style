@@ -7,6 +7,9 @@
 ** Table of Contents                                                   :TOC:
 - [[#amorystyle][@amory/style]]
   - [[#license][License]]
+  - [[#source][Source]]
+    - [[#utils][Utils]]
+      - [[#camelcase][camelCase]]
 
 ** License
 
@@ -25,3 +28,64 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 #+end_quote
+
+** Source
+
+*** Utils
+
+**** camelCase
+
+#+HTML: <details>
+#+begin_src js :tangle src/utils/camel-case.js
+/**
+ * Converts `string` to camel case.
+ *
+ * @param {string} string
+ * - The string to convert.
+ *
+ * @returns {string}
+ *   The camel cased string.
+ */
+
+export function camelCase (string = "") {
+  return string.replace (/\x2D([a-z])/gu, function (_, a) {
+    return a.toUpperCase ()
+  })
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/utils/camel-case.test.js
+import ava from "ava"
+import { camelCase } from "./camel-case.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = camelCase ()
+  const expect = ""
+
+  t.is (actual, expect)
+})
+
+ava ("given a string in kebab-case", (t) => {
+  const actual = camelCase ("background-color")
+  const expect = "backgroundColor"
+
+  t.is (actual, expect)
+})
+
+ava ("given a string in camel-case", (t) => {
+  const actual = camelCase ("backgroundColor")
+  const expect = "backgroundColor"
+
+  t.is (actual, expect)
+})
+
+ava ("given a string in lowercase", (t) => {
+  const actual = camelCase ("background")
+  const expect = "background"
+
+  t.is (actual, expect)
+})
+#+end_src
+#+HTML: </details>
