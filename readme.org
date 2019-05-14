@@ -13,6 +13,7 @@
       - [[#index][index]]
     - [[#build][Build]]
       - [[#getpropertyid][getPropertyId]]
+      - [[#getstringhash][getStringHash]]
     - [[#parse][Parse]]
       - [[#parseinput][parseInput]]
     - [[#utils][Utils]]
@@ -75,6 +76,7 @@ ava ("given undefined arguments", (t) => {
 #+begin_src js :tangle src/api/index.js
 export { css } from "./css.js"
 export { getPropertyId } from "../build/get-property-id.js"
+export { getStringHash } from "../build/get-string-hash.js"
 export { parseInput } from "../parse/parse-input.js"
 export { camelCase } from "../utils/camel-case.js"
 export { kebabCase } from "../utils/kebab-case.js"
@@ -872,6 +874,66 @@ ava ("given a string with a valid property name (1)", (t) => {
 ava ("given a string with a valid property name (2)", (t) => {
   const actual = getPropertyId ("background-color")
   const expect = 713
+
+  t.is (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
+**** getStringHash
+
+#+HTML: <details>
+#+begin_src js :tangle src/build/get-string-hash.js
+/**
+ * Converts `string` to unique hash identifier string.
+ *
+ * @param {string} string
+ * - The string to convert.
+ *
+ * @returns {string}
+ *   The string hash identifer.
+ */
+
+export function getStringHash (string = "") {
+  return string
+    .split ("")
+    .reduce (function (i, str) {
+      return i << 5 ^ i ^ str.charCodeAt () & 0xffffffffff
+    }, 5381 << 2)
+    .toString (36)
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/build/get-string-hash.test.js
+import ava from "ava"
+import { getStringHash } from "./get-string-hash.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = getStringHash ().slice (-3)
+  const expect = "glw"
+
+  t.is (actual, expect)
+})
+
+ava ("given an empty string", (t) => {
+  const actual = getStringHash ("").slice (-3)
+  const expect = "glw"
+
+  t.is (actual, expect)
+})
+
+ava ("given a simple string (1)", (t) => {
+  const actual = getStringHash ("abc").slice (-3)
+  const expect = "ed0"
+
+  t.is (actual, expect)
+})
+
+ava ("given a simple string (2)", (t) => {
+  const actual = getStringHash ("abcd").slice (-3)
+  const expect = "47k"
 
   t.is (actual, expect)
 })
