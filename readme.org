@@ -20,6 +20,7 @@
     - [[#client][Client]]
       - [[#canusedom][canUseDom]]
       - [[#getstyleelement][getStyleElement]]
+      - [[#update][update]]
     - [[#parse][Parse]]
       - [[#parseidentifier][parseIdentifier]]
       - [[#parseinput][parseInput]]
@@ -93,6 +94,7 @@ export { getStringHash } from "../build/get-string-hash.js"
 export { getStyles } from "../build/get-styles.js"
 export { canUseDom } from "../client/can-use-dom.js"
 export { getStyleElement } from "../client/get-style-element.js"
+export { update } from "../client/update.js"
 export { parse } from "../parse/parse.js"
 export { parseIdentifier } from "../parse/parse-identifier.js"
 export { parseInput } from "../parse/parse-input.js"
@@ -1541,6 +1543,139 @@ ava.serial (
     t.is (actual, expect)
   }
 )
+#+end_src
+#+HTML: </details>
+
+**** update
+
+#+HTML: <details>
+#+begin_src js :tangle src/client/update.js
+import { getStyles } from "../build/get-styles.js"
+import { store } from "../store/store.js"
+import { canUseDom } from "./can-use-dom.js"
+import { getStyleElement } from "./get-style-element.js"
+
+/* istanbul ignore next */
+
+export const update = (function (elements) {
+  return function (params = {}, compact = true) {
+    store.forEach (function (_, media) {
+      canUseDom &&
+        window.requestAnimationFrame (function () {
+          const styles = getStyles (media, compact)
+
+          const style = elements.has (media)
+            ? elements.get (media)
+            : getStyleElement (media)
+
+          style.innerHTML = styles
+          elements.set (media, style)
+        })
+    })
+
+    return params
+  }
+}) (new Map ())
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/client/update.test.js
+import ava from "ava"
+import { store } from "../store/store.js"
+import { update } from "./update.js"
+
+ava ("1", (t) => {
+  store.set (
+    "",
+    new Map ([
+      [
+        '[{"background-color":"#f00"}]',
+        {
+          "block": [
+            {
+              "background-color": "#f00"
+            }
+          ],
+          "emit": true,
+          "identifier": "jt2a9",
+          "input": {
+            "background-color": "#f00"
+          },
+          "media": "",
+          "property": "backgroundColor",
+          "selectors": [[".jt2a9"]]
+        }
+      ],
+      [
+        '[{"display":"flex"},{"display":"grid"}]',
+        {
+          "block": [{ "display": "flex" }, { "display": "grid" }],
+          "emit": true,
+          "identifier": "dr7nz",
+          "input": {
+            "display": ["flex", "grid"]
+          },
+          "media": "",
+          "property": "display",
+          "selectors": [[".dr7nz"]]
+        }
+      ]
+    ])
+  )
+
+  const actual = update ()
+
+  const expect = {}
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("2", (t) => {
+  store.set (
+    "(min-width: 768px)",
+    new Map ([
+      [
+        '[{"background-color":"#f00"}]',
+        {
+          "block": [
+            {
+              "background-color": "#f00"
+            }
+          ],
+          "emit": true,
+          "identifier": "jt2a9",
+          "input": {
+            "background-color": "#f00"
+          },
+          "media": "",
+          "property": "backgroundColor",
+          "selectors": [[".jt2a9"]]
+        }
+      ],
+      [
+        '[{"display":"flex"},{"display":"grid"}]',
+        {
+          "block": [{ "display": "flex" }, { "display": "grid" }],
+          "emit": true,
+          "identifier": "dr7nz",
+          "input": {
+            "display": ["flex", "grid"]
+          },
+          "media": "",
+          "property": "display",
+          "selectors": [[".dr7nz"]]
+        }
+      ]
+    ])
+  )
+
+  const actual = update ()
+
+  const expect = {}
+
+  t.deepEqual (actual, expect)
+})
 #+end_src
 #+HTML: </details>
 
