@@ -5,7 +5,7 @@
  * - The string to convert.
  *
  * @returns {string}
- *   The string hash identifer.
+ *   The string hash identifier.
  */
 
 export function getStringHash (string = "") {
