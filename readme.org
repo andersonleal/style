@@ -19,6 +19,7 @@
       - [[#parseinput][parseInput]]
       - [[#parse-1][parse]]
     - [[#store][Store]]
+      - [[#cache][cache]]
       - [[#store-1][store]]
     - [[#utils][Utils]]
       - [[#camelcase][camelCase]]
@@ -84,6 +85,7 @@ export { getStringHash } from "../build/get-string-hash.js"
 export { parse } from "../parse/parse.js"
 export { parseIdentifier } from "../parse/parse-identifier.js"
 export { parseInput } from "../parse/parse-input.js"
+export { cache } from "../store/cache.js"
 export { store } from "../store/store.js"
 export { camelCase } from "../utils/camel-case.js"
 export { kebabCase } from "../utils/kebab-case.js"
@@ -1449,6 +1451,188 @@ ava ("given an object with valid property and value", (t) => {
 #+HTML: </details>
 
 *** Store
+
+**** cache
+
+#+HTML: <details>
+#+begin_src js :tangle src/store/cache.js
+import { store } from "./store.js"
+import { merge } from "../utils/merge.js"
+
+export function cache (params = {}) {
+  const block = params.block || []
+  const media = params.media || ""
+
+  const key = JSON.stringify (block)
+
+  if (!store.has (media)) {
+    store.set (media, new Map ())
+  }
+
+  if (store.get (media).has (key)) {
+    const style = store.get (media).get (key)
+
+    const addSelector =
+      style.selectors.findIndex (function (selector) {
+        return selector.join ("") === params.selectors[0].join ("")
+      }) < 0
+
+    store.get (media).set (
+      key,
+      merge (
+        params,
+        {
+          "selectors": null
+        },
+        {
+          "selectors": addSelector
+            ? style.selectors.concat (params.selectors)
+            : style.selectors
+        }
+      )
+    )
+  } else {
+    store.get (media).set (key, params)
+  }
+
+  return store.get (media).get (key)
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/store/cache.test.js
+import ava from "ava"
+import { cache } from "./cache.js"
+import { store } from "./store.js"
+
+ava.serial ("given undefined arguments", (t) => {
+  const actual = cache ()
+
+  const expect1 = {}
+  const expect2 = store.has ("")
+  const expect3 = store.get ("")
+
+  t.deepEqual (actual, expect1)
+  t.true (expect2)
+  t.true (expect3 instanceof Map)
+})
+
+ava.serial ("given an object with valid property and value (1)", (t) => {
+  const actual = cache ({
+    "block": [
+      {
+        "background-color": "#f00"
+      }
+    ],
+    "emit": true,
+    "identifier": "jt2a9",
+    "input": {
+      "background-color": "#f00"
+    },
+    "media": "",
+    "property": "backgroundColor",
+    "selectors": [[".jt2a9"]],
+    "value": "#f00"
+  })
+
+  const expect = {
+    "block": [
+      {
+        "background-color": "#f00"
+      }
+    ],
+    "emit": true,
+    "identifier": "jt2a9",
+    "input": {
+      "background-color": "#f00"
+    },
+    "media": "",
+    "property": "backgroundColor",
+    "selectors": [[".jt2a9"]],
+    "value": "#f00"
+  }
+
+  t.deepEqual (actual, expect)
+})
+
+ava.serial ("given an object with valid property and value (2)", (t) => {
+  const actual = cache ({
+    "block": [
+      {
+        "background-color": "#f00"
+      }
+    ],
+    "emit": true,
+    "identifier": "jtdzh",
+    "input": {
+      "background-color": "#f00"
+    },
+    "media": "",
+    "property": "backgroundColor",
+    "selectors": [[".jtdzh", ":hover"]],
+    "value": "#f00"
+  })
+
+  const expect = {
+    "block": [
+      {
+        "background-color": "#f00"
+      }
+    ],
+    "emit": true,
+    "identifier": "jtdzh",
+    "input": {
+      "background-color": "#f00"
+    },
+    "media": "",
+    "property": "backgroundColor",
+    "selectors": [[".jt2a9"], [".jtdzh", ":hover"]],
+    "value": "#f00"
+  }
+
+  t.deepEqual (actual, expect)
+})
+
+ava.serial ("given an object with valid property and value (3)", (t) => {
+  const actual = cache ({
+    "block": [
+      {
+        "background-color": "#f00"
+      }
+    ],
+    "emit": true,
+    "identifier": "jtdzh",
+    "input": {
+      "background-color": "#f00"
+    },
+    "media": "",
+    "property": "backgroundColor",
+    "selectors": [[".jtdzh", ":hover"]],
+    "value": "#f00"
+  })
+
+  const expect = {
+    "block": [
+      {
+        "background-color": "#f00"
+      }
+    ],
+    "emit": true,
+    "identifier": "jtdzh",
+    "input": {
+      "background-color": "#f00"
+    },
+    "media": "",
+    "property": "backgroundColor",
+    "selectors": [[".jt2a9"], [".jtdzh", ":hover"]],
+    "value": "#f00"
+  }
+
+  t.deepEqual (actual, expect)
+})
+#+end_src
+#+HTML: </details>
 
 **** store
 
