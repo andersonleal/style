@@ -1,7 +1,7 @@
 /* istanbul ignore next */
 
 export function getStyleElement (media = "") {
-  const styles = Array.from (document.getElementsByTagName ("style"))
+  const styles = document.getElementsByTagName ("style")
 
   let style
 

@@ -18,6 +18,7 @@
       - [[#getstringhash][getStringHash]]
       - [[#getstyles][getStyles]]
     - [[#client][Client]]
+      - [[#canusedom][canUseDom]]
       - [[#getstyleelement][getStyleElement]]
     - [[#parse][Parse]]
       - [[#parseidentifier][parseIdentifier]]
@@ -90,6 +91,7 @@ export { getPropertyId } from "../build/get-property-id.js"
 export { getSelectorsString } from "../build/get-selectors-string.js"
 export { getStringHash } from "../build/get-string-hash.js"
 export { getStyles } from "../build/get-styles.js"
+export { canUseDom } from "../client/can-use-dom.js"
 export { getStyleElement } from "../client/get-style-element.js"
 export { parse } from "../parse/parse.js"
 export { parseIdentifier } from "../parse/parse-identifier.js"
@@ -1301,6 +1303,24 @@ ava.serial (
 
 *** Client
 
+**** canUseDom
+
+#+HTML: <details>
+#+begin_src js :tangle src/client/can-use-dom.js
+/* istanbul ignore next */
+
+/**
+ * @returns {boolean}
+ */
+
+export const canUseDom = Boolean (
+  typeof window !== "undefined" &&
+    window.document &&
+    window.document.createElement
+)
+#+end_src
+#+HTML: </details>
+
 **** getStyleElement
 
 #+HTML: <details>
@@ -1308,7 +1328,7 @@ ava.serial (
 /* istanbul ignore next */
 
 export function getStyleElement (media = "") {
-  const styles = Array.from (document.getElementsByTagName ("style"))
+  const styles = document.getElementsByTagName ("style")
 
   let style
 
