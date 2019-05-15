@@ -1,5 +1,5 @@
-import { parseInput } from "../parse/parse-input.js"
+import { parse } from "../parse/parse.js"
 
 export function css (params = {}) {
-  return parseInput ({ "input": params })
+  return parse ({ "input": params })
 }

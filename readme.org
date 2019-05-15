@@ -17,6 +17,7 @@
     - [[#parse][Parse]]
       - [[#parseidentifier][parseIdentifier]]
       - [[#parseinput][parseInput]]
+      - [[#parse-1][parse]]
     - [[#utils][Utils]]
       - [[#camelcase][camelCase]]
       - [[#kebabcase][kebabCase]]
@@ -49,10 +50,10 @@ limitations under the License.
 
 #+HTML: <details>
 #+begin_src js :tangle src/api/css.js
-import { parseInput } from "../parse/parse-input.js"
+import { parse } from "../parse/parse.js"
 
 export function css (params = {}) {
-  return parseInput ({ "input": params })
+  return parse ({ "input": params })
 }
 #+end_src
 #+HTML: </details>
@@ -78,6 +79,7 @@ ava ("given undefined arguments", (t) => {
 export { css } from "./css.js"
 export { getPropertyId } from "../build/get-property-id.js"
 export { getStringHash } from "../build/get-string-hash.js"
+export { parse } from "../parse/parse.js"
 export { parseIdentifier } from "../parse/parse-identifier.js"
 export { parseInput } from "../parse/parse-input.js"
 export { camelCase } from "../utils/camel-case.js"
@@ -1358,6 +1360,82 @@ ava ("given an object with multiple properties and values", (t) => {
       "media": "",
       "property": "display",
       "selectors": [],
+      "value": "block"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
+**** parse
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse.js
+import { parseInput } from "./parse-input.js"
+import { parseIdentifier } from "./parse-identifier.js"
+
+export function parse (params = {}) {
+  return parseInput (params).reduce (function (styles, style) {
+    return styles.concat (parseIdentifier (style))
+  }, [])
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse.test.js
+import ava from "ava"
+import { parse } from "./parse.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = parse ()
+
+  const expect = []
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with valid property and value", (t) => {
+  const actual = parse ({
+    "input": {
+      "background-color": "#f00",
+      "display": "block"
+    }
+  })
+
+  const expect = [
+    {
+      "block": [
+        {
+          "background-color": "#f00"
+        }
+      ],
+      "emit": true,
+      "identifier": "jt2a9",
+      "input": {
+        "background-color": "#f00"
+      },
+      "media": "",
+      "property": "backgroundColor",
+      "selectors": [[".jt2a9"]],
+      "value": "#f00"
+    },
+    {
+      "block": [
+        {
+          "display": "block"
+        }
+      ],
+      "emit": true,
+      "identifier": "drtx9",
+      "input": {
+        "display": "block"
+      },
+      "media": "",
+      "property": "display",
+      "selectors": [[".drtx9"]],
       "value": "block"
     }
   ]
