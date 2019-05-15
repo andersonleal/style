@@ -18,6 +18,8 @@
       - [[#parseidentifier][parseIdentifier]]
       - [[#parseinput][parseInput]]
       - [[#parse-1][parse]]
+    - [[#store][Store]]
+      - [[#store-1][store]]
     - [[#utils][Utils]]
       - [[#camelcase][camelCase]]
       - [[#kebabcase][kebabCase]]
@@ -82,6 +84,7 @@ export { getStringHash } from "../build/get-string-hash.js"
 export { parse } from "../parse/parse.js"
 export { parseIdentifier } from "../parse/parse-identifier.js"
 export { parseInput } from "../parse/parse-input.js"
+export { store } from "../store/store.js"
 export { camelCase } from "../utils/camel-case.js"
 export { kebabCase } from "../utils/kebab-case.js"
 export {
@@ -1441,6 +1444,53 @@ ava ("given an object with valid property and value", (t) => {
   ]
 
   t.deepEqual (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
+*** Store
+
+**** store
+
+#+HTML: <details>
+#+begin_src js :tangle src/store/store.js
+export const store = (function (STORE) {
+  return STORE
+}) (new Map ())
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/store/store.test.js
+import ava from "ava"
+import { store } from "./store.js"
+
+ava.serial ("when 'store' module' is imported", (t) => {
+  const actual = store instanceof Map
+
+  t.true (actual)
+})
+
+ava.serial ("given 'true' is set for the 'one' key", (t) => {
+  store.set ("one", true)
+
+  const actual = store.get ("one")
+
+  t.true (actual)
+})
+
+ava.serial ("given 'false' is set for the 'two' key", (t) => {
+  store.set ("two", false)
+
+  const actual = store.get ("two")
+
+  t.false (actual)
+})
+
+ava.serial ("given 'true' is get for the 'one' key", (t) => {
+  const actual = store.get ("one")
+
+  t.true (actual)
 })
 #+end_src
 #+HTML: </details>
