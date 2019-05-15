@@ -16,6 +16,7 @@
       - [[#getpropertyid][getPropertyId]]
       - [[#getselectorsstring][getSelectorsString]]
       - [[#getstringhash][getStringHash]]
+      - [[#getstyles][getStyles]]
     - [[#parse][Parse]]
       - [[#parseidentifier][parseIdentifier]]
       - [[#parseinput][parseInput]]
@@ -86,6 +87,7 @@ export { getBlockString } from "../build/get-block-string.js"
 export { getPropertyId } from "../build/get-property-id.js"
 export { getSelectorsString } from "../build/get-selectors-string.js"
 export { getStringHash } from "../build/get-string-hash.js"
+export { getStyles } from "../build/get-styles.js"
 export { parse } from "../parse/parse.js"
 export { parseIdentifier } from "../parse/parse-identifier.js"
 export { parseInput } from "../parse/parse-input.js"
@@ -113,12 +115,14 @@ export { toPairs } from "../utils/to-pairs.js"
 
 #+HTML: <details>
 #+begin_src js :tangle src/build/get-block-string.js
+import { toPairs } from "../utils/to-pairs.js"
+
 export function getBlockString (params = {}, compact = true) {
   const block = params.block || []
 
   return block
     .map (function (rule) {
-      return Object.entries (rule).map (function (style) {
+      return toPairs (rule).map (function (style) {
         const property = style[0]
         const value = style[1]
 
@@ -191,26 +195,29 @@ ava ("given a block with fallback properties and value", (t) => {
   t.is (actual, expect)
 })
 
-ava ("given a block with fallback properties and value (compact false)", (t) => {
-  const actual = getBlockString (
-    {
-      "block": [
-        {
-          "background-color": "#f00"
-        },
-        {
-          "background-color": "rgba(255, 0, 0, 0.9)"
-        }
-      ]
-    },
-    false
-  )
+ava (
+  "given a block with fallback properties and value (compact false)",
+  (t) => {
+    const actual = getBlockString (
+      {
+        "block": [
+          {
+            "background-color": "#f00"
+          },
+          {
+            "background-color": "rgba(255, 0, 0, 0.9)"
+          }
+        ]
+      },
+      false
+    )
 
-  const expect =
-    "background-color: #f00; background-color: rgba(255, 0, 0, 0.9)"
+    const expect =
+      "background-color: #f00; background-color: rgba(255, 0, 0, 0.9)"
 
-  t.is (actual, expect)
-})
+    t.is (actual, expect)
+  }
+)
 #+end_src
 #+HTML: </details>
 
@@ -1172,6 +1179,120 @@ ava ("given a simple string (2)", (t) => {
 
   t.is (actual, expect)
 })
+#+end_src
+#+HTML: </details>
+
+**** getStyles
+
+#+HTML: <details>
+#+begin_src js :tangle src/build/get-styles.js
+import { store } from "../store/store.js"
+import { getBlockString } from "./get-block-string.js"
+import { getSelectorsString } from "./get-selectors-string.js"
+
+export function getStyles (media = "", compact = true) {
+  const styles = []
+
+  store.get (media).forEach (function (style) {
+    styles.push (
+      "".concat (
+        getSelectorsString (style, compact),
+        compact ? "{" : " { ",
+        getBlockString (style, compact),
+        compact ? "}" : " }"
+      )
+    )
+  })
+
+  return styles.join (compact ? "" : "\n")
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/build/get-styles.test.js
+import ava from "ava"
+import { cache } from "../store/cache.js"
+import { getStyles } from "./get-styles.js"
+
+ava.serial ("given an object with simple property and value", (t) => {
+  cache ({
+    "block": [
+      {
+        "background-color": "#f00"
+      }
+    ],
+    "identifier": "jt2a9",
+    "property": "backgroundColor",
+    "selectors": [[".jt2a9"]],
+    "value": "#f00"
+  })
+
+  const actual = getStyles ()
+
+  const expect = ".jt2a9{background-color:#f00}"
+
+  t.is (actual, expect)
+})
+
+ava.serial (
+  "given an object with simple property and value (compact false)",
+  (t) => {
+    cache ({
+      "block": [
+        {
+          "background-color": "#f00"
+        }
+      ],
+      "identifier": "jt2a9",
+      "property": "backgroundColor",
+      "selectors": [[".jt2a9"]],
+      "value": "#f00"
+    })
+
+    const actual = getStyles ("", false)
+
+    const expect = ".jt2a9 { background-color: #f00 }"
+
+    t.is (actual, expect)
+  }
+)
+
+ava.serial ("given an object with simple property and value (2)", (t) => {
+  cache ({
+    "block": [
+      {
+        "background-color": "#f00"
+      }
+    ],
+    "emit": true,
+    "identifier": "jtdzh",
+    "input": {
+      "background-color": "#f00"
+    },
+    "media": "",
+    "property": "backgroundColor",
+    "selectors": [[".jtdzh", ":hover"]],
+    "value": "#f00"
+  })
+
+  const actual = getStyles ()
+
+  const expect = ".jt2a9,.jtdzh:hover{background-color:#f00}"
+
+  t.is (actual, expect)
+})
+
+ava.serial (
+  "given an object with simple property and value (compact false) (2)",
+  (t) => {
+    const actual = getStyles ("", false)
+
+    const expect = ".jt2a9, .jtdzh:hover { background-color: #f00 }"
+
+    t.is (actual, expect)
+  }
+)
 #+end_src
 #+HTML: </details>
 
