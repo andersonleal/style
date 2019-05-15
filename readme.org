@@ -12,6 +12,7 @@
       - [[#css][css]]
       - [[#index][index]]
     - [[#build][Build]]
+      - [[#getblockstring][getBlockString]]
       - [[#getpropertyid][getPropertyId]]
       - [[#getselectorsstring][getSelectorsString]]
       - [[#getstringhash][getStringHash]]
@@ -81,6 +82,7 @@ ava ("given undefined arguments", (t) => {
 #+HTML: <details>
 #+begin_src js :tangle src/api/index.js
 export { css } from "./css.js"
+export { getBlockString } from "../build/get-block-string.js"
 export { getPropertyId } from "../build/get-property-id.js"
 export { getSelectorsString } from "../build/get-selectors-string.js"
 export { getStringHash } from "../build/get-string-hash.js"
@@ -106,6 +108,111 @@ export { toPairs } from "../utils/to-pairs.js"
 #+HTML: </details>
 
 *** Build
+
+**** getBlockString
+
+#+HTML: <details>
+#+begin_src js :tangle src/build/get-block-string.js
+export function getBlockString (params = {}, compact = true) {
+  const block = params.block || []
+
+  return block
+    .map (function (rule) {
+      return Object.entries (rule).map (function (style) {
+        const property = style[0]
+        const value = style[1]
+
+        return "".concat (property, compact ? ":" : ": ", value)
+      })
+    })
+    .join (compact ? ";" : "; ")
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/build/get-block-string.test.js
+import ava from "ava"
+import { getBlockString } from "./get-block-string.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = getBlockString ()
+
+  const expect = ""
+
+  t.is (actual, expect)
+})
+
+ava ("given a block with simple property and value", (t) => {
+  const actual = getBlockString ({
+    "block": [
+      {
+        "background-color": "#f00"
+      }
+    ]
+  })
+
+  const expect = "background-color:#f00"
+
+  t.is (actual, expect)
+})
+
+ava ("given a block with simple property and value (compact false)", (t) => {
+  const actual = getBlockString (
+    {
+      "block": [
+        {
+          "background-color": "#f00"
+        }
+      ]
+    },
+    false
+  )
+
+  const expect = "background-color: #f00"
+
+  t.is (actual, expect)
+})
+
+ava ("given a block with fallback properties and value", (t) => {
+  const actual = getBlockString ({
+    "block": [
+      {
+        "background-color": "#f00"
+      },
+      {
+        "background-color": "rgba(255, 0, 0, 0.9)"
+      }
+    ]
+  })
+
+  const expect = "background-color:#f00;background-color:rgba(255, 0, 0, 0.9)"
+
+  t.is (actual, expect)
+})
+
+ava ("given a block with fallback properties and value (compact false)", (t) => {
+  const actual = getBlockString (
+    {
+      "block": [
+        {
+          "background-color": "#f00"
+        },
+        {
+          "background-color": "rgba(255, 0, 0, 0.9)"
+        }
+      ]
+    },
+    false
+  )
+
+  const expect =
+    "background-color: #f00; background-color: rgba(255, 0, 0, 0.9)"
+
+  t.is (actual, expect)
+})
+#+end_src
+#+HTML: </details>
 
 **** getPropertyId
 

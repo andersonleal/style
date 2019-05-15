@@ -1,4 +1,5 @@
 export { css } from "./css.js"
+export { getBlockString } from "../build/get-block-string.js"
 export { getPropertyId } from "../build/get-property-id.js"
 export { getSelectorsString } from "../build/get-selectors-string.js"
 export { getStringHash } from "../build/get-string-hash.js"
