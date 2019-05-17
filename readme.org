@@ -23,6 +23,7 @@
       - [[#getstyleelement][getStyleElement]]
       - [[#update][update]]
     - [[#parse][Parse]]
+      - [[#parsefallbacks][parseFallbacks]]
       - [[#parsefontface][parseFontFace]]
       - [[#parseidentifier][parseIdentifier]]
       - [[#parseinput][parseInput]]
@@ -168,6 +169,7 @@ export { canUseDom } from "../client/can-use-dom.js"
 export { getStyleElement } from "../client/get-style-element.js"
 export { update } from "../client/update.js"
 export { parse } from "../parse/parse.js"
+export { parseFallbacks } from "../parse/parse-fallbacks.js"
 export { parseFontFace } from "../parse/parse-font-face.js"
 export { parseIdentifier } from "../parse/parse-identifier.js"
 export { parseInput } from "../parse/parse-input.js"
@@ -1829,6 +1831,358 @@ ava ("2", (t) => {
 #+HTML: </details>
 
 *** Parse
+
+**** parseFallbacks
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-fallbacks.js
+import { kebabCase } from "../utils/kebab-case.js"
+import { merge } from "../utils/merge.js"
+import { parseFontFace } from "./parse-font-face.js"
+
+/* eslint-disable max-lines-per-function */
+export function parseFallbacks (params = {}, compact = true) {
+  const value = params.value
+
+  if (Array.isArray (value)) {
+    const property = params.property
+
+    let block = []
+    const styles = []
+
+    switch (property) {
+      case "backgroundImage":
+        block = [
+          {
+            [kebabCase (property)]: value.join (compact ? "," : ", ")
+          }
+        ]
+        break
+      case "fontFamily":
+        block = [
+          {
+            "font-family": value
+              .reduce (function (fonts, font) {
+                if (typeof font === "object") {
+                  const fontFace = parseFontFace ({
+                    "property": property,
+                    "value": font
+                  }).shift ()
+
+                  styles.push (fontFace)
+
+                  return fonts.concat (fontFace.identifier)
+                }
+
+                return fonts.concat (font)
+              }, [])
+              .join (compact ? "," : ", ")
+          }
+        ]
+        break
+      default:
+        block = value.map (function (fallback) {
+          return { [kebabCase (property)]: fallback }
+        })
+        break
+    }
+
+    return styles.concat (
+      merge (
+        params,
+        {
+          "block": null
+        },
+        {
+          block
+        }
+      )
+    )
+  }
+
+  return params
+}
+/* eslint-enable max-lines-per-function */
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-fallbacks.test.js
+import ava from "ava"
+import { parseFallbacks } from "./parse-fallbacks.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = parseFallbacks ()
+
+  const expect = {}
+
+  t.deepEqual (actual, expect)
+})
+
+ava (
+  "given an object with backgroundImage property and array value (1)",
+  (t) => {
+    const actual = parseFallbacks ({
+      "property": "backgroundImage",
+      "value": [
+        "url(https://mdn.mozillademos.org/files/11305/firefox.png)",
+        "url(https://mdn.mozillademos.org/files/11307/bubbles.png)",
+        "linear-gradient(to right, rgba(30, 75, 115, 1)",
+        "rgba(255, 255, 255, 0))"
+      ]
+    })
+
+    const expect = [
+      {
+        "block": [
+          {
+            "background-image":
+              "url(https://mdn.mozillademos.org/files/11305/firefox.png),url(https://mdn.mozillademos.org/files/11307/bubbles.png),linear-gradient(to right, rgba(30, 75, 115, 1),rgba(255, 255, 255, 0))"
+          }
+        ],
+        "property": "backgroundImage",
+        "value": [
+          "url(https://mdn.mozillademos.org/files/11305/firefox.png)",
+          "url(https://mdn.mozillademos.org/files/11307/bubbles.png)",
+          "linear-gradient(to right, rgba(30, 75, 115, 1)",
+          "rgba(255, 255, 255, 0))"
+        ]
+      }
+    ]
+
+    t.deepEqual (actual, expect)
+  }
+)
+
+ava (
+  "given an object with backgroundImage property and array value (2)",
+  (t) => {
+    const actual = parseFallbacks (
+      {
+        "property": "backgroundImage",
+        "value": [
+          "url(https://mdn.mozillademos.org/files/11305/firefox.png)",
+          "url(https://mdn.mozillademos.org/files/11307/bubbles.png)",
+          "linear-gradient(to right, rgba(30, 75, 115, 1)",
+          "rgba(255, 255, 255, 0))"
+        ]
+      },
+      false
+    )
+
+    const expect = [
+      {
+        "block": [
+          {
+            "background-image":
+              "url(https://mdn.mozillademos.org/files/11305/firefox.png), url(https://mdn.mozillademos.org/files/11307/bubbles.png), linear-gradient(to right, rgba(30, 75, 115, 1), rgba(255, 255, 255, 0))"
+          }
+        ],
+        "property": "backgroundImage",
+        "value": [
+          "url(https://mdn.mozillademos.org/files/11305/firefox.png)",
+          "url(https://mdn.mozillademos.org/files/11307/bubbles.png)",
+          "linear-gradient(to right, rgba(30, 75, 115, 1)",
+          "rgba(255, 255, 255, 0))"
+        ]
+      }
+    ]
+
+    t.deepEqual (actual, expect)
+  }
+)
+
+/* eslint-disable max-lines-per-function */
+ava ("given an object with fontFamily property and array value (1)", (t) => {
+  const actual = parseFallbacks ({
+    "property": "fontFamily",
+    "value": [
+      {
+        "fontFamily": "Avenir",
+        "src": "url('/fonts/avenir.woff') format('woff')"
+      },
+      "Helvetica",
+      "Arial",
+      {
+        "src": "url('/fonts/font-2.woff') format('woff')"
+      }
+    ]
+  })
+
+  const expect = [
+    {
+      "block": [
+        {
+          "font-family": "Avenir"
+        },
+        {
+          "src": "url('/fonts/avenir.woff') format('woff')"
+        }
+      ],
+      "emit": false,
+      "identifier": "Avenir",
+      "media": "",
+      "property": "fontFamily",
+      "selectors": [["@font-face"]],
+      "value": {
+        "fontFamily": "Avenir",
+        "src": "url('/fonts/avenir.woff') format('woff')"
+      }
+    },
+    {
+      "block": [
+        {
+          "src": "url('/fonts/font-2.woff') format('woff')"
+        },
+        {
+          "font-family": "c53zz"
+        }
+      ],
+      "emit": false,
+      "identifier": "c53zz",
+      "media": "",
+      "property": "fontFamily",
+      "selectors": [["@font-face"]],
+      "value": {
+        "src": "url('/fonts/font-2.woff') format('woff')"
+      }
+    },
+    {
+      "block": [
+        {
+          "font-family": "Avenir,Helvetica,Arial,c53zz"
+        }
+      ],
+      "property": "fontFamily",
+      "value": [
+        {
+          "fontFamily": "Avenir",
+          "src": "url('/fonts/avenir.woff') format('woff')"
+        },
+        "Helvetica",
+        "Arial",
+        {
+          "fontFamily": "c53zz",
+          "src": "url('/fonts/font-2.woff') format('woff')"
+        }
+      ]
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with fontFamily property and array value (2)", (t) => {
+  const actual = parseFallbacks (
+    {
+      "property": "fontFamily",
+      "value": [
+        {
+          "fontFamily": "Avenir",
+          "src": "url('/fonts/avenir.woff') format('woff')"
+        },
+        "Helvetica",
+        "Arial",
+        {
+          "src": "url('/fonts/font-2.woff') format('woff')"
+        }
+      ]
+    },
+    false
+  )
+
+  const expect = [
+    {
+      "block": [
+        {
+          "font-family": "Avenir"
+        },
+        {
+          "src": "url('/fonts/avenir.woff') format('woff')"
+        }
+      ],
+      "emit": false,
+      "identifier": "Avenir",
+      "media": "",
+      "property": "fontFamily",
+      "selectors": [["@font-face"]],
+      "value": {
+        "fontFamily": "Avenir",
+        "src": "url('/fonts/avenir.woff') format('woff')"
+      }
+    },
+    {
+      "block": [
+        {
+          "src": "url('/fonts/font-2.woff') format('woff')"
+        },
+        {
+          "font-family": "c53zz"
+        }
+      ],
+      "emit": false,
+      "identifier": "c53zz",
+      "media": "",
+      "property": "fontFamily",
+      "selectors": [["@font-face"]],
+      "value": {
+        "src": "url('/fonts/font-2.woff') format('woff')"
+      }
+    },
+    {
+      "block": [
+        {
+          "font-family": "Avenir, Helvetica, Arial, c53zz"
+        }
+      ],
+      "property": "fontFamily",
+      "value": [
+        {
+          "fontFamily": "Avenir",
+          "src": "url('/fonts/avenir.woff') format('woff')"
+        },
+        "Helvetica",
+        "Arial",
+        {
+          "fontFamily": "c53zz",
+          "src": "url('/fonts/font-2.woff') format('woff')"
+        }
+      ]
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+/* eslint-enable max-lines-per-function */
+
+ava ("given an object with display property and array value", (t) => {
+  const actual = parseFallbacks ({
+    "property": "display",
+    "value": ["block", "flex", "grid"]
+  })
+
+  const expect = [
+    {
+      "block": [
+        {
+          "display": "block"
+        },
+        {
+          "display": "flex"
+        },
+        {
+          "display": "grid"
+        }
+      ],
+      "property": "display",
+      "value": ["block", "flex", "grid"]
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+#+end_src
+#+HTML: </details>
 
 **** parseFontFace
 
