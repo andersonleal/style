@@ -1,5 +1,5 @@
 import { kebabCase } from "../utils/kebab-case.js"
-import { merge } from "../utils/merge.js"
+import { isArr, isObj, merge } from "../utils/merge.js"
 import { toPairs } from "../utils/to-pairs.js"
 import { parseIdentifier } from "./parse-identifier.js"
 
@@ -7,7 +7,7 @@ export function parseFontFace (params = {}) {
   const property = params.property
   const value = params.value
 
-  if (property === "fontFamily" && typeof value === "object") {
+  if (property === "fontFamily" && isObj (value) && !isArr (value)) {
     const media = params.media || ""
 
     const tmp = parseIdentifier (
