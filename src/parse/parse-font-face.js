@@ -26,6 +26,7 @@ export function parseFontFace (params = {}) {
           return styles.concat ({ [kebabCase (style[0])]: style[1] })
         }, []),
         "emit": false,
+        "identifier": fontFamily,
         "media": ""
       }),
       merge (

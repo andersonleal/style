@@ -134,7 +134,7 @@ ava ("given an object with valid font-face declaration (3)", (t) => {
         }
       ],
       "emit": false,
-      "identifier": "c5a4t",
+      "identifier": "Avenir",
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],

@@ -1862,6 +1862,7 @@ export function parseFontFace (params = {}) {
           return styles.concat ({ [kebabCase (style[0])]: style[1] })
         }, []),
         "emit": false,
+        "identifier": fontFamily,
         "media": ""
       }),
       merge (
@@ -2020,7 +2021,7 @@ ava ("given an object with valid font-face declaration (3)", (t) => {
         }
       ],
       "emit": false,
-      "identifier": "c5a4t",
+      "identifier": "Avenir",
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
