@@ -24,6 +24,7 @@ export {
   cloneObj,
   emptyObj,
   isArr,
+  isDef,
   isObj,
   merge,
   mergeArr,

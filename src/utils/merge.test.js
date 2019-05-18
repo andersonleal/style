@@ -1,5 +1,5 @@
 import ava from "ava"
-import { emptyObj, merge } from "./merge.js"
+import { emptyObj, isDef, merge } from "./merge.js"
 
 ava ("given undefined arguments", (t) => {
   const actual = merge ()
@@ -18,6 +18,20 @@ ava ("given an array as value", (t) => {
 ava ("given an object as value", (t) => {
   const actual = emptyObj ({ "a": null })
   const expect = {}
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a defined object", (t) => {
+  const actual = isDef ("")
+  const expect = true
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an undefined object", (t) => {
+  const actual = isDef ()
+  const expect = false
 
   t.deepEqual (actual, expect)
 })

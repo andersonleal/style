@@ -1,6 +1,6 @@
 import { getPropertyId } from "../build/get-property-id.js"
 import { getStringHash } from "../build/get-string-hash.js"
-import { merge } from "../utils/merge.js"
+import { isDef, merge } from "../utils/merge.js"
 
 export function parseIdentifier (params = {}) {
   if (params.property) {
@@ -10,22 +10,21 @@ export function parseIdentifier (params = {}) {
 
     let selectors = params.selectors || []
 
-    const identifier =
-      typeof params.identifier === "undefined"
-        ? getPropertyId (property).toString (36) +
-          getStringHash (
-            ""
-              .concat (media)
-              .concat (
-                selectors
-                  .map (function (selector) {
-                    return selector.join ("")
-                  })
-                  .join (",")
-              )
-              .concat (JSON.stringify (value))
-          ).slice (-3)
-        : params.identifier
+    const identifier = isDef (params.identifier)
+      ? params.identifier
+      : getPropertyId (property).toString (36) +
+        getStringHash (
+          ""
+            .concat (media)
+            .concat (
+              selectors
+                .map (function (selector) {
+                  return selector.join ("")
+                })
+                .join (",")
+            )
+            .concat (JSON.stringify (value))
+        ).slice (-3)
 
     selectors =
       selectors.length || (/^%/u).test (property)

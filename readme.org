@@ -185,6 +185,7 @@ export {
   cloneObj,
   emptyObj,
   isArr,
+  isDef,
   isObj,
   merge,
   mergeArr,
@@ -1839,7 +1840,7 @@ ava ("2", (t) => {
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse-fallbacks.js
 import { kebabCase } from "../utils/kebab-case.js"
-import { merge } from "../utils/merge.js"
+import { isObj, merge } from "../utils/merge.js"
 import { parseFontFace } from "./parse-font-face.js"
 
 /* eslint-disable max-lines-per-function */
@@ -1865,7 +1866,7 @@ export function parseFallbacks (params = {}, compact = true) {
           {
             "font-family": value
               .reduce (function (fonts, font) {
-                if (typeof font === "object") {
+                if (isObj (font)) {
                   const fontFace = parseFontFace ({
                     "property": property,
                     "value": font
@@ -2395,7 +2396,7 @@ ava ("given an object with valid font-face declaration (3)", (t) => {
 #+begin_src js :tangle src/parse/parse-identifier.js
 import { getPropertyId } from "../build/get-property-id.js"
 import { getStringHash } from "../build/get-string-hash.js"
-import { merge } from "../utils/merge.js"
+import { isDef, merge } from "../utils/merge.js"
 
 export function parseIdentifier (params = {}) {
   if (params.property) {
@@ -2405,22 +2406,21 @@ export function parseIdentifier (params = {}) {
 
     let selectors = params.selectors || []
 
-    const identifier =
-      typeof params.identifier === "undefined"
-        ? getPropertyId (property).toString (36) +
-          getStringHash (
-            ""
-              .concat (media)
-              .concat (
-                selectors
-                  .map (function (selector) {
-                    return selector.join ("")
-                  })
-                  .join (",")
-              )
-              .concat (JSON.stringify (value))
-          ).slice (-3)
-        : params.identifier
+    const identifier = isDef (params.identifier)
+      ? params.identifier
+      : getPropertyId (property).toString (36) +
+        getStringHash (
+          ""
+            .concat (media)
+            .concat (
+              selectors
+                .map (function (selector) {
+                  return selector.join ("")
+                })
+                .join (",")
+            )
+            .concat (JSON.stringify (value))
+        ).slice (-3)
 
     selectors =
       selectors.length || (/^%/u).test (property)
@@ -2965,13 +2965,14 @@ ava ("given an object with valid keyframes declaration (2)", (t) => {
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse-media.js
 import { kebabCase } from "../utils/kebab-case.js"
+import { isObj } from "../utils/merge.js"
 import { parse } from "./parse.js"
 
 export function parseMedia (params = {}) {
   const property = params.property
   const value = params.value
 
-  if ((/^@media/u).test (property) && typeof value === "object") {
+  if ((/^@media/u).test (property) && isObj (value)) {
     const media = [params.media, kebabCase (property.slice (7))]
       .filter (Boolean)
       .join (" and ")
@@ -3773,6 +3774,10 @@ ava ("given a string with lowercase characters", (t) => {
 
 export const isArr = Array.isArray
 
+export function isDef (value) {
+  return typeof value !== "undefined"
+}
+
 export function isObj (value) {
   return typeof value === "object"
 }
@@ -3844,7 +3849,7 @@ export function merge (... sources) {
 #+HTML: <details>
 #+begin_src js :tangle src/utils/merge.test.js
 import ava from "ava"
-import { emptyObj, merge } from "./merge.js"
+import { emptyObj, isDef, merge } from "./merge.js"
 
 ava ("given undefined arguments", (t) => {
   const actual = merge ()
@@ -3863,6 +3868,20 @@ ava ("given an array as value", (t) => {
 ava ("given an object as value", (t) => {
   const actual = emptyObj ({ "a": null })
   const expect = {}
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a defined object", (t) => {
+  const actual = isDef ("")
+  const expect = true
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an undefined object", (t) => {
+  const actual = isDef ()
+  const expect = false
 
   t.deepEqual (actual, expect)
 })

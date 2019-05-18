@@ -1,5 +1,5 @@
 import { kebabCase } from "../utils/kebab-case.js"
-import { merge } from "../utils/merge.js"
+import { isObj, merge } from "../utils/merge.js"
 import { parseFontFace } from "./parse-font-face.js"
 
 /* eslint-disable max-lines-per-function */
@@ -25,7 +25,7 @@ export function parseFallbacks (params = {}, compact = true) {
           {
             "font-family": value
               .reduce (function (fonts, font) {
-                if (typeof font === "object") {
+                if (isObj (font)) {
                   const fontFace = parseFontFace ({
                     "property": property,
                     "value": font

@@ -2,6 +2,10 @@
 
 export const isArr = Array.isArray
 
+export function isDef (value) {
+  return typeof value !== "undefined"
+}
+
 export function isObj (value) {
   return typeof value === "object"
 }
