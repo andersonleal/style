@@ -34,10 +34,7 @@ ava ("given an object with valid font-face declaration (1)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "src":
-          "url('/fonts/font.woff2') format ('woff2'), url('/fonts/font.woff') format ('woff')"
-      }
+      "value": "c5xq1"
     },
     {
       "block": [
@@ -50,10 +47,7 @@ ava ("given an object with valid font-face declaration (1)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [[".c5xq1"]],
-      "value": {
-        "src":
-          "url('/fonts/font.woff2') format ('woff2'), url('/fonts/font.woff') format ('woff')"
-      }
+      "value": "c5xq1"
     }
   ]
 
@@ -85,10 +79,7 @@ ava ("given an object with valid font-face declaration (2)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "src":
-          "url('/fonts/font2.woff2') format ('woff2'), url('/fonts/font2.woff') format ('woff')"
-      }
+      "value": "c5pnd"
     },
     {
       "block": [
@@ -101,10 +92,7 @@ ava ("given an object with valid font-face declaration (2)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [[".c5pnd"]],
-      "value": {
-        "src":
-          "url('/fonts/font2.woff2') format ('woff2'), url('/fonts/font2.woff') format ('woff')"
-      }
+      "value": "c5pnd"
     }
   ]
 
@@ -134,15 +122,11 @@ ava ("given an object with valid font-face declaration (3)", (t) => {
         }
       ],
       "emit": false,
-      "identifier": "Avenir",
+      "identifier": "c5a4t",
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "fontFamily": "Avenir",
-        "src":
-          "url('/fonts/avenir.woff2') format ('woff2'), url('/fonts/avenir.woff') format ('woff')"
-      }
+      "value": "Avenir"
     },
     {
       "block": [
@@ -155,11 +139,7 @@ ava ("given an object with valid font-face declaration (3)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [[".c5a4t"]],
-      "value": {
-        "fontFamily": "Avenir",
-        "src":
-          "url('/fonts/avenir.woff2') format ('woff2'), url('/fonts/avenir.woff') format ('woff')"
-      }
+      "value": "Avenir"
     }
   ]
 

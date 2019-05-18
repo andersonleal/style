@@ -110,14 +110,11 @@ ava ("given an object with fontFamily property and array value (1)", (t) => {
         }
       ],
       "emit": false,
-      "identifier": "Avenir",
+      "identifier": "c5lkw",
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "fontFamily": "Avenir",
-        "src": "url('/fonts/avenir.woff') format('woff')"
-      }
+      "value": "Avenir"
     },
     {
       "block": [
@@ -133,9 +130,7 @@ ava ("given an object with fontFamily property and array value (1)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "src": "url('/fonts/font-2.woff') format('woff')"
-      }
+      "value": "c53zz"
     },
     {
       "block": [
@@ -192,14 +187,11 @@ ava ("given an object with fontFamily property and array value (2)", (t) => {
         }
       ],
       "emit": false,
-      "identifier": "Avenir",
+      "identifier": "c5lkw",
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "fontFamily": "Avenir",
-        "src": "url('/fonts/avenir.woff') format('woff')"
-      }
+      "value": "Avenir"
     },
     {
       "block": [
@@ -215,9 +207,7 @@ ava ("given an object with fontFamily property and array value (2)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "src": "url('/fonts/font-2.woff') format('woff')"
-      }
+      "value": "c53zz"
     },
     {
       "block": [

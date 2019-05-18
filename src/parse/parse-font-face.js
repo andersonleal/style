@@ -11,7 +11,7 @@ export function parseFontFace (params = {}) {
     const media = params.media || ""
 
     const tmp = parseIdentifier (
-      merge (params, { "selectors": [["@font-face"]] })
+      merge (params, { "selectors": null }, { "selectors": [["@font-face"]] })
     )
 
     const fontFamily =
@@ -21,22 +21,29 @@ export function parseFontFace (params = {}) {
     delete value["font-family"]
 
     return [
-      merge (tmp, {
-        "block": toPairs (value).reduce (function (styles, style) {
-          return styles.concat ({ [kebabCase (style[0])]: style[1] })
-        }, []),
-        "emit": false,
-        "identifier": fontFamily,
-        "media": ""
-      }),
       merge (
         tmp,
-        { "selectors": null },
+        {
+          "block": null
+        },
+        {
+          "block": toPairs (value).reduce (function (styles, style) {
+            return styles.concat ({ [kebabCase (style[0])]: style[1] })
+          }, []),
+          "emit": false,
+          "media": "",
+          "value": fontFamily
+        }
+      ),
+      merge (
+        tmp,
+        { "block": null, "selectors": null },
         {
           "block": [{ "font-family": fontFamily }],
           "emit": true,
           "media": media,
-          "selectors": [[".".concat (tmp.identifier)]]
+          "selectors": [[".".concat (tmp.identifier)]],
+          "value": fontFamily
         }
       )
     ]

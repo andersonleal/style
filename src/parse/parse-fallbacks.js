@@ -33,7 +33,7 @@ export function parseFallbacks (params = {}, compact = true) {
 
                   styles.push (fontFace)
 
-                  return fonts.concat (fontFace.identifier)
+                  return fonts.concat (fontFace.value)
                 }
 
                 return fonts.concat (font)

@@ -1871,7 +1871,7 @@ export function parseFallbacks (params = {}, compact = true) {
 
                   styles.push (fontFace)
 
-                  return fonts.concat (fontFace.identifier)
+                  return fonts.concat (fontFace.value)
                 }
 
                 return fonts.concat (font)
@@ -2020,14 +2020,11 @@ ava ("given an object with fontFamily property and array value (1)", (t) => {
         }
       ],
       "emit": false,
-      "identifier": "Avenir",
+      "identifier": "c5lkw",
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "fontFamily": "Avenir",
-        "src": "url('/fonts/avenir.woff') format('woff')"
-      }
+      "value": "Avenir"
     },
     {
       "block": [
@@ -2043,9 +2040,7 @@ ava ("given an object with fontFamily property and array value (1)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "src": "url('/fonts/font-2.woff') format('woff')"
-      }
+      "value": "c53zz"
     },
     {
       "block": [
@@ -2102,14 +2097,11 @@ ava ("given an object with fontFamily property and array value (2)", (t) => {
         }
       ],
       "emit": false,
-      "identifier": "Avenir",
+      "identifier": "c5lkw",
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "fontFamily": "Avenir",
-        "src": "url('/fonts/avenir.woff') format('woff')"
-      }
+      "value": "Avenir"
     },
     {
       "block": [
@@ -2125,9 +2117,7 @@ ava ("given an object with fontFamily property and array value (2)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "src": "url('/fonts/font-2.woff') format('woff')"
-      }
+      "value": "c53zz"
     },
     {
       "block": [
@@ -2201,7 +2191,7 @@ export function parseFontFace (params = {}) {
     const media = params.media || ""
 
     const tmp = parseIdentifier (
-      merge (params, { "selectors": [["@font-face"]] })
+      merge (params, { "selectors": null }, { "selectors": [["@font-face"]] })
     )
 
     const fontFamily =
@@ -2211,22 +2201,29 @@ export function parseFontFace (params = {}) {
     delete value["font-family"]
 
     return [
-      merge (tmp, {
-        "block": toPairs (value).reduce (function (styles, style) {
-          return styles.concat ({ [kebabCase (style[0])]: style[1] })
-        }, []),
-        "emit": false,
-        "identifier": fontFamily,
-        "media": ""
-      }),
       merge (
         tmp,
-        { "selectors": null },
+        {
+          "block": null
+        },
+        {
+          "block": toPairs (value).reduce (function (styles, style) {
+            return styles.concat ({ [kebabCase (style[0])]: style[1] })
+          }, []),
+          "emit": false,
+          "media": "",
+          "value": fontFamily
+        }
+      ),
+      merge (
+        tmp,
+        { "block": null, "selectors": null },
         {
           "block": [{ "font-family": fontFamily }],
           "emit": true,
           "media": media,
-          "selectors": [[".".concat (tmp.identifier)]]
+          "selectors": [[".".concat (tmp.identifier)]],
+          "value": fontFamily
         }
       )
     ]
@@ -2275,10 +2272,7 @@ ava ("given an object with valid font-face declaration (1)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "src":
-          "url('/fonts/font.woff2') format ('woff2'), url('/fonts/font.woff') format ('woff')"
-      }
+      "value": "c5xq1"
     },
     {
       "block": [
@@ -2291,10 +2285,7 @@ ava ("given an object with valid font-face declaration (1)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [[".c5xq1"]],
-      "value": {
-        "src":
-          "url('/fonts/font.woff2') format ('woff2'), url('/fonts/font.woff') format ('woff')"
-      }
+      "value": "c5xq1"
     }
   ]
 
@@ -2326,10 +2317,7 @@ ava ("given an object with valid font-face declaration (2)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "src":
-          "url('/fonts/font2.woff2') format ('woff2'), url('/fonts/font2.woff') format ('woff')"
-      }
+      "value": "c5pnd"
     },
     {
       "block": [
@@ -2342,10 +2330,7 @@ ava ("given an object with valid font-face declaration (2)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [[".c5pnd"]],
-      "value": {
-        "src":
-          "url('/fonts/font2.woff2') format ('woff2'), url('/fonts/font2.woff') format ('woff')"
-      }
+      "value": "c5pnd"
     }
   ]
 
@@ -2375,15 +2360,11 @@ ava ("given an object with valid font-face declaration (3)", (t) => {
         }
       ],
       "emit": false,
-      "identifier": "Avenir",
+      "identifier": "c5a4t",
       "media": "",
       "property": "fontFamily",
       "selectors": [["@font-face"]],
-      "value": {
-        "fontFamily": "Avenir",
-        "src":
-          "url('/fonts/avenir.woff2') format ('woff2'), url('/fonts/avenir.woff') format ('woff')"
-      }
+      "value": "Avenir"
     },
     {
       "block": [
@@ -2396,11 +2377,7 @@ ava ("given an object with valid font-face declaration (3)", (t) => {
       "media": "",
       "property": "fontFamily",
       "selectors": [[".c5a4t"]],
-      "value": {
-        "fontFamily": "Avenir",
-        "src":
-          "url('/fonts/avenir.woff2') format ('woff2'), url('/fonts/avenir.woff') format ('woff')"
-      }
+      "value": "Avenir"
     }
   ]
 
@@ -3443,7 +3420,6 @@ export function merge (... sources) {
 
 #+HTML: <details>
 #+begin_src js :tangle src/utils/merge.test.js
-
 import ava from "ava"
 import { emptyObj, merge } from "./merge.js"
 
