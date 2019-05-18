@@ -80,3 +80,34 @@ ava (
     t.is (actual, expect)
   }
 )
+
+ava ("given a block with keyframes object", (t) => {
+  const actual = getBlockString ({
+    "block": [
+      { "0%": { "backgroundColor": "#f00", "opacity": 0 } },
+      { "100%": { "backgroundColor": "#0f0", "opacity": 1 } }
+    ]
+  })
+
+  const expect =
+    "0%{background-color:#f00;opacity:0}100%{background-color:#0f0;opacity:1}"
+
+  t.is (actual, expect)
+})
+
+ava ("given a block with keyframes object (compact false)", (t) => {
+  const actual = getBlockString (
+    {
+      "block": [
+        { "0%": { "backgroundColor": "#f00", "opacity": 0 } },
+        { "100%": { "backgroundColor": "#0f0", "opacity": 1 } }
+      ]
+    },
+    false
+  )
+
+  const expect =
+    "0% { background-color: #f00; opacity: 0 } 100% { background-color: #0f0; opacity: 1 }"
+
+  t.is (actual, expect)
+})
