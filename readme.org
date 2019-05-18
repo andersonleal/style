@@ -27,6 +27,7 @@
       - [[#parsefontface][parseFontFace]]
       - [[#parseidentifier][parseIdentifier]]
       - [[#parseinput][parseInput]]
+      - [[#parsekeyframes][parseKeyframes]]
       - [[#parsemedia][parseMedia]]
       - [[#parse-1][parse]]
     - [[#store][Store]]
@@ -173,6 +174,7 @@ export { parseFallbacks } from "../parse/parse-fallbacks.js"
 export { parseFontFace } from "../parse/parse-font-face.js"
 export { parseIdentifier } from "../parse/parse-identifier.js"
 export { parseInput } from "../parse/parse-input.js"
+export { parseKeyframes } from "../parse/parse-keyframes.js"
 export { parseMedia } from "../parse/parse-media.js"
 export { cache } from "../store/cache.js"
 export { store } from "../store/store.js"
@@ -2810,6 +2812,154 @@ ava ("given an object with multiple properties and values", (t) => {
 #+end_src
 #+HTML: </details>
 
+**** parseKeyframes
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-keyframes.js
+import { kebabCase } from "../utils/kebab-case.js"
+import { isObj, merge } from "../utils/merge.js"
+import { toPairs } from "../utils/to-pairs.js"
+import { parseIdentifier } from "./parse-identifier.js"
+
+export function parseKeyframes (params = {}) {
+  const property = params.property
+  const value = params.value
+
+  if (property === "animationName" && isObj (value)) {
+    const media = params.media || ""
+
+    const tmp = parseIdentifier (
+      merge (params, { "selectors": null }, { "selectors": [["@keyframes", " "]] })
+    )
+
+    const animationName = tmp.identifier
+
+    return [
+      merge (
+        tmp,
+        { "block": null, "selectors": null },
+        {
+          "block": toPairs (value).reduce (function (styles, style) {
+            return styles.concat ({ [kebabCase (style[0])]: style[1] })
+          }, []),
+          "emit": false,
+          "media": "",
+          "selectors": [tmp.selectors[0].concat (animationName)],
+          "value": animationName
+        }
+      ),
+      merge (
+        tmp,
+        { "block": null, "selectors": null },
+        {
+          "block": [{ "animation-name": animationName }],
+          "emit": true,
+          "media": media,
+          "selectors": [[".".concat (animationName)]],
+          "value": animationName
+        }
+      )
+    ]
+  }
+
+  return params
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-keyframes.test.js
+import ava from "ava"
+import { parseKeyframes } from "./parse-keyframes.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = parseKeyframes ()
+
+  const expect = {}
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with valid keyframes declaration (1)", (t) => {
+  const actual = parseKeyframes ({
+    "property": "animationName",
+    "value": {
+      "0%": {
+        "opacity": 0
+      },
+      "100%": {
+        "opacity": 1
+      }
+    }
+  })
+
+  const expect = [
+    {
+      "block": [{ "0%": { "opacity": 0 } }, { "100%": { "opacity": 1 } }],
+      "emit": false,
+      "identifier": "m7okn",
+      "media": "",
+      "property": "animationName",
+      "selectors": [["@keyframes", " ", "m7okn"]],
+      "value": "m7okn"
+    },
+    {
+      "block": [{ "animation-name": "m7okn" }],
+      "emit": true,
+      "identifier": "m7okn",
+      "media": "",
+      "property": "animationName",
+      "selectors": [[".m7okn"]],
+      "value": "m7okn"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with valid keyframes declaration (2)", (t) => {
+  const actual = parseKeyframes ({
+    "property": "animationName",
+    "value": {
+      "0%": {
+        "opacity": 1
+      },
+      "100%": {
+        "opacity": 0
+      }
+    }
+  })
+
+  const expect = [
+    {
+      "block": [{ "0%": { "opacity": 1 } }, { "100%": { "opacity": 0 } }],
+      "emit": false,
+      "identifier": "m7nlz",
+      "media": "",
+      "property": "animationName",
+      "selectors": [["@keyframes", " ", "m7nlz"]],
+      "value": "m7nlz"
+    },
+    {
+      "block": [
+        {
+          "animation-name": "m7nlz"
+        }
+      ],
+      "emit": true,
+      "identifier": "m7nlz",
+      "media": "",
+      "property": "animationName",
+      "selectors": [[".m7nlz"]],
+      "value": "m7nlz"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
 **** parseMedia
 
 #+HTML: <details>
@@ -2919,6 +3069,7 @@ import { parseFallbacks } from "./parse-fallbacks.js"
 import { parseFontFace } from "./parse-font-face.js"
 import { parseIdentifier } from "./parse-identifier.js"
 import { parseInput } from "./parse-input.js"
+import { parseKeyframes } from "./parse-keyframes.js"
 import { parseMedia } from "./parse-media.js"
 
 export function parse (params = {}) {
@@ -2934,6 +3085,9 @@ export function parse (params = {}) {
     }, [])
     .reduce (function (styles, style) {
       return styles.concat (parseFontFace (style))
+    }, [])
+    .reduce (function (styles, style) {
+      return styles.concat (parseKeyframes (style))
     }, [])
 }
 #+end_src
@@ -3158,6 +3312,100 @@ ava ("given an object with a complex fontFamily declaration", (t) => {
         },
         "sans-serif"
       ]
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with a complex keyframes declaration", (t) => {
+  /* eslint-disable sort-keys */
+  const actual = parse ({
+    "input": {
+      "animationName": "slide-left",
+      "@media (min-width: 768px)": {
+        "animationName": {
+          "0%": {
+            "opacity": 0
+          },
+          "100%": {
+            "opacity": 1
+          }
+        }
+      }
+    }
+  })
+  /* eslint-enable sort-keys */
+
+  const expect = [
+    {
+      "block": [
+        {
+          "animation-name": "slide-left"
+        }
+      ],
+      "emit": true,
+      "identifier": "m757v",
+      "input": {
+        "animationName": "slide-left"
+      },
+      "media": "",
+      "property": "animationName",
+      "selectors": [[".m757v"]],
+      "value": "slide-left"
+    },
+    {
+      "block": [
+        {
+          "0%": {
+            "opacity": 0
+          }
+        },
+        {
+          "100%": {
+            "opacity": 1
+          }
+        }
+      ],
+      "emit": false,
+      "identifier": "m7cxh",
+      "input": {
+        "animationName": {
+          "0%": {
+            "opacity": 0
+          },
+          "100%": {
+            "opacity": 1
+          }
+        }
+      },
+      "media": "",
+      "property": "animationName",
+      "selectors": [["@keyframes", " ", "m7cxh"]],
+      "value": "m7cxh"
+    },
+    {
+      "block": [
+        {
+          "animation-name": "m7cxh"
+        }
+      ],
+      "emit": true,
+      "identifier": "m7cxh",
+      "input": {
+        "animationName": {
+          "0%": {
+            "opacity": 0
+          },
+          "100%": {
+            "opacity": 1
+          }
+        }
+      },
+      "media": "(min-width: 768px)",
+      "property": "animationName",
+      "selectors": [[".m7cxh"]],
+      "value": "m7cxh"
     }
   ]
 

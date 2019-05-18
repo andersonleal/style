@@ -220,4 +220,98 @@ ava ("given an object with a complex fontFamily declaration", (t) => {
 
   t.deepEqual (actual, expect)
 })
+
+ava ("given an object with a complex keyframes declaration", (t) => {
+  /* eslint-disable sort-keys */
+  const actual = parse ({
+    "input": {
+      "animationName": "slide-left",
+      "@media (min-width: 768px)": {
+        "animationName": {
+          "0%": {
+            "opacity": 0
+          },
+          "100%": {
+            "opacity": 1
+          }
+        }
+      }
+    }
+  })
+  /* eslint-enable sort-keys */
+
+  const expect = [
+    {
+      "block": [
+        {
+          "animation-name": "slide-left"
+        }
+      ],
+      "emit": true,
+      "identifier": "m757v",
+      "input": {
+        "animationName": "slide-left"
+      },
+      "media": "",
+      "property": "animationName",
+      "selectors": [[".m757v"]],
+      "value": "slide-left"
+    },
+    {
+      "block": [
+        {
+          "0%": {
+            "opacity": 0
+          }
+        },
+        {
+          "100%": {
+            "opacity": 1
+          }
+        }
+      ],
+      "emit": false,
+      "identifier": "m7cxh",
+      "input": {
+        "animationName": {
+          "0%": {
+            "opacity": 0
+          },
+          "100%": {
+            "opacity": 1
+          }
+        }
+      },
+      "media": "",
+      "property": "animationName",
+      "selectors": [["@keyframes", " ", "m7cxh"]],
+      "value": "m7cxh"
+    },
+    {
+      "block": [
+        {
+          "animation-name": "m7cxh"
+        }
+      ],
+      "emit": true,
+      "identifier": "m7cxh",
+      "input": {
+        "animationName": {
+          "0%": {
+            "opacity": 0
+          },
+          "100%": {
+            "opacity": 1
+          }
+        }
+      },
+      "media": "(min-width: 768px)",
+      "property": "animationName",
+      "selectors": [[".m7cxh"]],
+      "value": "m7cxh"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
 /* eslint-disable max-lines-per-function */
