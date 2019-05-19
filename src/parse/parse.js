@@ -10,10 +10,16 @@ import { parseSelectors } from "./parse-selectors.js"
 export function parse (params = {}) {
   return parseInput (params)
     .reduce (function (styles, style) {
-      return styles.concat (parseIdentifier (style))
+      return styles.concat (parseMedia (style))
     }, [])
     .reduce (function (styles, style) {
-      return styles.concat (parseMedia (style))
+      return styles.concat (parsePlaceholder (style))
+    }, [])
+    .reduce (function (styles, style) {
+      return styles.concat (parseSelectors (style))
+    }, [])
+    .reduce (function (styles, style) {
+      return styles.concat (parseIdentifier (style))
     }, [])
     .reduce (function (styles, style) {
       return styles.concat (parseFallbacks (style))
@@ -23,11 +29,5 @@ export function parse (params = {}) {
     }, [])
     .reduce (function (styles, style) {
       return styles.concat (parseKeyframes (style))
-    }, [])
-    .reduce (function (styles, style) {
-      return styles.concat (parsePlaceholder (style))
-    }, [])
-    .reduce (function (styles, style) {
-      return styles.concat (parseSelectors (style))
     }, [])
 }

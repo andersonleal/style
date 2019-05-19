@@ -315,3 +315,76 @@ ava ("given an object with a complex keyframes declaration", (t) => {
   t.deepEqual (actual, expect)
 })
 /* eslint-disable max-lines-per-function */
+
+ava ("given an object with placeholder and selectors", (t) => {
+  const actual = parse ({
+    "input": {
+      "%figure": true,
+      "%figure > ul": {
+        "listStyleType": "none"
+      },
+      ":hover": {
+        "[class^=product]&": {
+          "backgroundColor": "#0f0"
+        },
+        "color": "#f00"
+      },
+      "color": "#f00"
+    }
+  })
+
+  const expect = [
+    {
+      "block": [{ "%figure": true }],
+      "emit": true,
+      "identifier": "af3qz",
+      "input": { "%figure": true },
+      "media": "",
+      "property": "%figure",
+      "selectors": [],
+      "value": true
+    },
+    {
+      "block": [{ "list-style-type": "none" }],
+      "emit": false,
+      "identifier": "eor94",
+      "input": { "listStyleType": "none" },
+      "media": "",
+      "property": "listStyleType",
+      "selectors": [[".af3qz", ">", "ul"]],
+      "value": "none"
+    },
+    {
+      "block": [{ "background-color": "#0f0" }],
+      "emit": false,
+      "identifier": "jtowj",
+      "input": { "backgroundColor": "#0f0" },
+      "media": "",
+      "property": "backgroundColor",
+      "selectors": [["[class^=product]", ":hover"]],
+      "value": "#0f0"
+    },
+    {
+      "block": [{ "color": "#f00" }],
+      "emit": true,
+      "identifier": "jkdzh",
+      "input": { "color": "#f00" },
+      "media": "",
+      "property": "color",
+      "selectors": [[".jkdzh", ":hover"]],
+      "value": "#f00"
+    },
+    {
+      "block": [{ "color": "#f00" }],
+      "emit": true,
+      "identifier": "jk2a9",
+      "input": { "color": "#f00" },
+      "media": "",
+      "property": "color",
+      "selectors": [[".jk2a9"]],
+      "value": "#f00"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})

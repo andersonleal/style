@@ -9,7 +9,7 @@ export function parseSelectors (params = {}) {
   const value = params.value
 
   if ((/([#$%&*+,.>[^~]|:[a-z])/u).test (property) && isObj (value)) {
-    const emit = (/^[%:[]/u).test (property)
+    const emit = (/^:/u).test (property)
 
     const selectors = getSelectors (property)
       .reduce (function (a, b) {

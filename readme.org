@@ -3552,7 +3552,7 @@ export function parseSelectors (params = {}) {
   const value = params.value
 
   if ((/([#$%&*+,.>[^~]|:[a-z])/u).test (property) && isObj (value)) {
-    const emit = (/^[%:[]/u).test (property)
+    const emit = (/^:/u).test (property)
 
     const selectors = getSelectors (property)
       .reduce (function (a, b) {
@@ -3708,10 +3708,16 @@ import { parseSelectors } from "./parse-selectors.js"
 export function parse (params = {}) {
   return parseInput (params)
     .reduce (function (styles, style) {
-      return styles.concat (parseIdentifier (style))
+      return styles.concat (parseMedia (style))
     }, [])
     .reduce (function (styles, style) {
-      return styles.concat (parseMedia (style))
+      return styles.concat (parsePlaceholder (style))
+    }, [])
+    .reduce (function (styles, style) {
+      return styles.concat (parseSelectors (style))
+    }, [])
+    .reduce (function (styles, style) {
+      return styles.concat (parseIdentifier (style))
     }, [])
     .reduce (function (styles, style) {
       return styles.concat (parseFallbacks (style))
@@ -3721,12 +3727,6 @@ export function parse (params = {}) {
     }, [])
     .reduce (function (styles, style) {
       return styles.concat (parseKeyframes (style))
-    }, [])
-    .reduce (function (styles, style) {
-      return styles.concat (parsePlaceholder (style))
-    }, [])
-    .reduce (function (styles, style) {
-      return styles.concat (parseSelectors (style))
     }, [])
 }
 #+end_src
@@ -4051,6 +4051,79 @@ ava ("given an object with a complex keyframes declaration", (t) => {
   t.deepEqual (actual, expect)
 })
 /* eslint-disable max-lines-per-function */
+
+ava ("given an object with placeholder and selectors", (t) => {
+  const actual = parse ({
+    "input": {
+      "%figure": true,
+      "%figure > ul": {
+        "listStyleType": "none"
+      },
+      ":hover": {
+        "[class^=product]&": {
+          "backgroundColor": "#0f0"
+        },
+        "color": "#f00"
+      },
+      "color": "#f00"
+    }
+  })
+
+  const expect = [
+    {
+      "block": [{ "%figure": true }],
+      "emit": true,
+      "identifier": "af3qz",
+      "input": { "%figure": true },
+      "media": "",
+      "property": "%figure",
+      "selectors": [],
+      "value": true
+    },
+    {
+      "block": [{ "list-style-type": "none" }],
+      "emit": false,
+      "identifier": "eor94",
+      "input": { "listStyleType": "none" },
+      "media": "",
+      "property": "listStyleType",
+      "selectors": [[".af3qz", ">", "ul"]],
+      "value": "none"
+    },
+    {
+      "block": [{ "background-color": "#0f0" }],
+      "emit": false,
+      "identifier": "jtowj",
+      "input": { "backgroundColor": "#0f0" },
+      "media": "",
+      "property": "backgroundColor",
+      "selectors": [["[class^=product]", ":hover"]],
+      "value": "#0f0"
+    },
+    {
+      "block": [{ "color": "#f00" }],
+      "emit": true,
+      "identifier": "jkdzh",
+      "input": { "color": "#f00" },
+      "media": "",
+      "property": "color",
+      "selectors": [[".jkdzh", ":hover"]],
+      "value": "#f00"
+    },
+    {
+      "block": [{ "color": "#f00" }],
+      "emit": true,
+      "identifier": "jk2a9",
+      "input": { "color": "#f00" },
+      "media": "",
+      "property": "color",
+      "selectors": [[".jk2a9"]],
+      "value": "#f00"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
 #+end_src
 #+HTML: </details>
 
