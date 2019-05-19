@@ -1,7 +1,9 @@
 /* istanbul ignore next */
 
 export function getStyleElement (media = "") {
-  const styles = document.getElementsByTagName ("style")
+  const styles = document.querySelectorAll (
+    "style[data-creator='@amory/style']"
+  )
 
   let style
 
@@ -12,6 +14,7 @@ export function getStyleElement (media = "") {
   }
 
   style = document.createElement ("style")
+  style.setAttribute ("data-creator", "@amory/style")
 
   if (media.length) {
     style.media = media

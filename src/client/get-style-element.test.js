@@ -1,4 +1,4 @@
-/* global browser, page */
+/* eslint-disable max-len */ /* global browser, page */
 
 import ava from "ava"
 import http from "http"
@@ -18,11 +18,15 @@ ava.before (async () => {
         case "/a":
           return response.end (httpContent ())
         case "/b":
-          return response.end (httpContent (`<style>.b{all:inherit}</style>`))
+          return response.end (
+            httpContent (
+              `<style data-creator="@amory/style">.b{all:inherit}</style>`
+            )
+          )
         case "/c":
           return response.end (
             httpContent (
-              `<style media="(min-width: 768px)">.c{gap:1px}</style>`
+              `<style data-creator="@amory/style" media="(min-width: 768px)">.c{gap:1px}</style>`
             )
           )
       }
@@ -65,7 +69,7 @@ ava.serial ("given URL '/a', create a new style element (2)", async (t) => {
 
   const actual = await page.content ()
 
-  const expect = httpContent (`<style></style>`)
+  const expect = httpContent (`<style data-creator="@amory/style"></style>`)
 
   t.is (style, "HTMLStyleElement")
   t.is (actual, expect)
@@ -80,7 +84,9 @@ ava.serial ("given URL '/a', create a new style element (3)", async (t) => {
 
   const actual = await page.content ()
 
-  const expect = httpContent (`<style media="(min-width: 768px)"></style>`)
+  const expect = httpContent (
+    `<style data-creator="@amory/style" media="(min-width: 768px)"></style>`
+  )
 
   t.is (style, "HTMLStyleElement")
   t.is (actual, expect)
@@ -91,7 +97,9 @@ ava.serial ("given URL '/b', verify returned contents (1)", async (t) => {
 
   const actual = await page.content ()
 
-  const expect = httpContent (`<style>.b{all:inherit}</style>`)
+  const expect = httpContent (
+    `<style data-creator="@amory/style">.b{all:inherit}</style>`
+  )
 
   t.is (actual, expect)
 })
@@ -107,7 +115,9 @@ ava.serial (
 
     const actual = await page.content ()
 
-    const expect = httpContent (`<style>.b{all:inherit}</style>`)
+    const expect = httpContent (
+      `<style data-creator="@amory/style">.b{all:inherit}</style>`
+    )
 
     t.is (style, "HTMLStyleElement")
     t.is (actual, expect)
@@ -127,7 +137,7 @@ ava.serial (
 
     const expect = httpContent (
       /* eslint-disable-next-line max-len */
-      `<style>.b{all:inherit}</style><style media="(min-width: 768px)"></style>`
+      `<style data-creator="@amory/style">.b{all:inherit}</style><style data-creator="@amory/style" media="(min-width: 768px)"></style>`
     )
 
     t.is (style, "HTMLStyleElement")
@@ -141,7 +151,7 @@ ava.serial ("given URL '/c', verify returned contents (1)", async (t) => {
   const actual = await page.content ()
 
   const expect = httpContent (
-    `<style media="(min-width: 768px)">.c{gap:1px}</style>`
+    `<style data-creator="@amory/style" media="(min-width: 768px)">.c{gap:1px}</style>`
   )
 
   t.is (actual, expect)
@@ -159,7 +169,7 @@ ava.serial (
     const actual = await page.content ()
 
     const expect = httpContent (
-      `<style media="(min-width: 768px)">.c{gap:1px}</style><style></style>`
+      `<style data-creator="@amory/style" media="(min-width: 768px)">.c{gap:1px}</style><style data-creator="@amory/style"></style>`
     )
 
     t.is (style, "HTMLStyleElement")
@@ -179,10 +189,11 @@ ava.serial (
     const actual = await page.content ()
 
     const expect = httpContent (
-      `<style media="(min-width: 768px)">.c{gap:1px}</style>`
+      `<style data-creator="@amory/style" media="(min-width: 768px)">.c{gap:1px}</style>`
     )
 
     t.is (style, "HTMLStyleElement")
     t.is (actual, expect)
   }
 )
+/* eslint-enable max-len */
