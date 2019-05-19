@@ -1,9 +1,10 @@
 import { camelCase } from "../utils/camel-case.js"
 import { kebabCase } from "../utils/kebab-case.js"
+import { isDef } from "../utils/merge.js"
 import { toPairs } from "../utils/to-pairs.js"
 
 export function parseInput (params = {}) {
-  const emit = params.emit || true
+  const emit = isDef (params.emit) ? params.emit : true
   const input = params.input || {}
   const media = params.media || ""
   const selectors = params.selectors || []
