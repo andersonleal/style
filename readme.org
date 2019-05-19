@@ -15,6 +15,7 @@
       - [[#getancestors][getAncestors]]
       - [[#getblockstring][getBlockString]]
       - [[#getclassname][getClassName]]
+      - [[#getplaceholders][getPlaceholders]]
       - [[#getpropertyid][getPropertyId]]
       - [[#getselectors][getSelectors]]
       - [[#getselectorsstring][getSelectorsString]]
@@ -165,6 +166,7 @@ export { css } from "./css.js"
 export { getAncestors } from "../build/get-ancestors.js"
 export { getBlockString } from "../build/get-block-string.js"
 export { getClassName } from "../build/get-class-name.js"
+export { getPlaceholders } from "../build/get-placeholders.js"
 export { getPropertyId } from "../build/get-property-id.js"
 export { getSelectors } from "../build/get-selectors.js"
 export { getSelectorsString } from "../build/get-selectors-string.js"
@@ -534,6 +536,50 @@ ava ("given an object with identifier and emit false", (t) => {
   })
 
   const expect = null
+
+  t.deepEqual (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
+**** getPlaceholders
+
+#+HTML: <details>
+#+begin_src js :tangle src/build/get-placeholders.js
+import { parseIdentifier } from "../parse/parse-identifier.js"
+
+export function getPlaceholders (selectors = []) {
+  return selectors.map (function (selector) {
+    return (/^%/u).test (selector)
+      ? ".".concat (
+        parseIdentifier ({
+          "property": selector,
+          "value": selector
+        }).identifier
+      )
+      : selector
+  })
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/build/get-placeholders.test.js
+import ava from "ava"
+import { getPlaceholders } from "./get-placeholders.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = getPlaceholders ()
+
+  const expect = []
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an array of selectors with placeholders", (t) => {
+  const actual = getPlaceholders (["a", "%b", ".c", "%products", "%items"])
+
+  const expect = ["a", ".afqkz", ".c", ".afknd", ".afxpz"]
 
   t.deepEqual (actual, expect)
 })
