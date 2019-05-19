@@ -1,4 +1,5 @@
 export { css } from "./css.js"
+export { getAncestors } from "../build/get-ancestors.js"
 export { getBlockString } from "../build/get-block-string.js"
 export { getClassName } from "../build/get-class-name.js"
 export { getPropertyId } from "../build/get-property-id.js"
