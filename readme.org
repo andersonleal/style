@@ -32,6 +32,7 @@
       - [[#parseinput][parseInput]]
       - [[#parsekeyframes][parseKeyframes]]
       - [[#parsemedia][parseMedia]]
+      - [[#parseplaceholder][parsePlaceholder]]
       - [[#parse-1][parse]]
     - [[#store][Store]]
       - [[#cache][cache]]
@@ -182,6 +183,7 @@ export { parseIdentifier } from "../parse/parse-identifier.js"
 export { parseInput } from "../parse/parse-input.js"
 export { parseKeyframes } from "../parse/parse-keyframes.js"
 export { parseMedia } from "../parse/parse-media.js"
+export { parsePlaceholder } from "../parse/parse-placeholder.js"
 export { cache } from "../store/cache.js"
 export { store } from "../store/store.js"
 export { camelCase } from "../utils/camel-case.js"
@@ -3443,6 +3445,95 @@ ava ("given an object with complex valid media declaration", (t) => {
 #+end_src
 #+HTML: </details>
 
+**** parsePlaceholder
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-placeholder.js
+import { merge } from "../utils/merge.js"
+import { parseIdentifier } from "./parse-identifier.js"
+
+export function parsePlaceholder (params = {}) {
+  const property = params.property
+  const value = params.value
+
+  if ((/^%/u).test (property) && value === true) {
+    return merge (params, {
+      "identifier": parseIdentifier ({
+        "media": params.media,
+        property,
+        "value": property
+      }).identifier
+    })
+  }
+
+  return params
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-placeholder.test.js
+import ava from "ava"
+import { parsePlaceholder } from "./parse-placeholder.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = parsePlaceholder ()
+
+  const expect = {}
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with valid placeholder (1)", (t) => {
+  const actual = parsePlaceholder ({
+    "property": "%figure",
+    "value": true
+  })
+
+  const expect = {
+    "identifier": "af3qz",
+    "property": "%figure",
+    "value": true
+  }
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with valid placeholder (2)", (t) => {
+  const actual = parsePlaceholder ({
+    "property": "%stuff",
+    "value": true
+  })
+
+  const expect = {
+    "identifier": "afdkz",
+    "property": "%stuff",
+    "value": true
+  }
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object without a placeholder", (t) => {
+  const actual = parsePlaceholder ({
+    "property": "%stuff",
+    "value": {
+      "backgroundColor": "#f00"
+    }
+  })
+
+  const expect = {
+    "property": "%stuff",
+    "value": {
+      "backgroundColor": "#f00"
+    }
+  }
+
+  t.deepEqual (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
 **** parse
 
 #+HTML: <details>
@@ -3453,6 +3544,7 @@ import { parseIdentifier } from "./parse-identifier.js"
 import { parseInput } from "./parse-input.js"
 import { parseKeyframes } from "./parse-keyframes.js"
 import { parseMedia } from "./parse-media.js"
+import { parsePlaceholder } from "./parse-placeholder.js"
 
 export function parse (params = {}) {
   return parseInput (params)
@@ -3470,6 +3562,9 @@ export function parse (params = {}) {
     }, [])
     .reduce (function (styles, style) {
       return styles.concat (parseKeyframes (style))
+    }, [])
+    .reduce (function (styles, style) {
+      return styles.concat (parsePlaceholder (style))
     }, [])
 }
 #+end_src
