@@ -15,6 +15,7 @@
       - [[#getblockstring][getBlockString]]
       - [[#getclassname][getClassName]]
       - [[#getpropertyid][getPropertyId]]
+      - [[#getselectors][getSelectors]]
       - [[#getselectorsstring][getSelectorsString]]
       - [[#getstringhash][getStringHash]]
       - [[#getstyles][getStyles]]
@@ -163,6 +164,7 @@ export { css } from "./css.js"
 export { getBlockString } from "../build/get-block-string.js"
 export { getClassName } from "../build/get-class-name.js"
 export { getPropertyId } from "../build/get-property-id.js"
+export { getSelectors } from "../build/get-selectors.js"
 export { getSelectorsString } from "../build/get-selectors-string.js"
 export { getStringHash } from "../build/get-string-hash.js"
 export { getStyles } from "../build/get-styles.js"
@@ -1214,6 +1216,169 @@ ava ("given a string with a valid property name (2)", (t) => {
   const expect = 713
 
   t.is (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
+**** getSelectors
+
+#+HTML: <details>
+#+begin_src js :tangle src/build/get-selectors.js
+/**
+ * @param {string} selectors
+ * - String identifying the elements to which a set of CSS rulesets apply.
+ *
+ * @returns {?RegExpMatchArray}
+ */
+
+export function getSelectors (selectors = "") {
+  const identifier =
+    "-?[A-Z_a-z\\u{00a0}-\\u{ffff}]+[-0-9A-Z_a-z\\u{00a0}-\\u{ffff}]*"
+
+  const regex = new RegExp (
+    [
+      "(&)",
+
+      "(#".concat (identifier, ")"),
+
+      "(\\.".concat (identifier, ")"),
+      "(\\$".concat (identifier, ")"),
+      "(%".concat (identifier, ")"),
+      "(\\^".concat (identifier, ")"),
+      "(\\[[-$*0-9=A-Z^_a-z|~\\u{00a0}-\\u{ffff}]+\\])",
+      "(::?".concat (identifier, ")"),
+
+      "(".concat (identifier, ")"),
+
+      "(\\*)",
+
+      "([ +>~]+)"
+    ].join ("|"),
+    "gu"
+  )
+
+  return selectors.split (",").map (function (selector) {
+    return selector
+      .trim ()
+      .match (regex)
+      .map (function (str) {
+        return str.trim ().replace (/^$/u, " ")
+      })
+  })
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/build/get-selectors.test.js
+import ava from "ava"
+import { getSelectors } from "./get-selectors.js"
+
+ava ("given undefined arguments", (t) => {
+  t.throws (() => getSelectors ())
+})
+
+ava ("given a string with ancestor selector", (t) => {
+  const actual = getSelectors ("&")
+  const expect = [["&"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with an id selector", (t) => {
+  const actual = getSelectors ("#a")
+  const expect = [["#a"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with a class selector", (t) => {
+  const actual = getSelectors (".a")
+  const expect = [[".a"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with a suffix selector", (t) => {
+  const actual = getSelectors ("$a")
+  const expect = [["$a"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with a placeholder selector", (t) => {
+  const actual = getSelectors ("%a")
+  const expect = [["%a"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with a prefix selector", (t) => {
+  const actual = getSelectors ("^a")
+  const expect = [["^a"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with an attribute selector (1)", (t) => {
+  const actual = getSelectors ("[a]")
+  const expect = [["[a]"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with an attribute selector (2)", (t) => {
+  const actual = getSelectors ("[class=x]")
+  const expect = [["[class=x]"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with a pseudo-class selector", (t) => {
+  const actual = getSelectors (":first-child")
+  const expect = [[":first-child"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with a pseudo-element selector", (t) => {
+  const actual = getSelectors ("::after")
+  const expect = [["::after"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with a type selector", (t) => {
+  const actual = getSelectors ("a")
+  const expect = [["a"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with a universal selector", (t) => {
+  const actual = getSelectors ("*")
+  const expect = [["*"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with a complex selector", (t) => {
+  const actual = getSelectors ("&#a.b%c[d]::after li ~ *")
+  const expect = [
+    ["&", "#a", ".b", "%c", "[d]", "::after", " ", "li", "~", "*"]
+  ]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with multiple complex selectors", (t) => {
+  const actual = getSelectors ("& > div::hover, li[aria-expanded=true]")
+  const expect = [
+    ["&", ">", "div", "::hover"],
+    ["li", "[aria-expanded=true]"]
+  ]
+
+  t.deepEqual (actual, expect)
 })
 #+end_src
 #+HTML: </details>
