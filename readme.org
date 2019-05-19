@@ -33,6 +33,7 @@
       - [[#parsekeyframes][parseKeyframes]]
       - [[#parsemedia][parseMedia]]
       - [[#parseplaceholder][parsePlaceholder]]
+      - [[#parseselectors][parseSelectors]]
       - [[#parse-1][parse]]
     - [[#store][Store]]
       - [[#cache][cache]]
@@ -184,6 +185,7 @@ export { parseInput } from "../parse/parse-input.js"
 export { parseKeyframes } from "../parse/parse-keyframes.js"
 export { parseMedia } from "../parse/parse-media.js"
 export { parsePlaceholder } from "../parse/parse-placeholder.js"
+export { parseSelectors } from "../parse/parse-selectors.js"
 export { cache } from "../store/cache.js"
 export { store } from "../store/store.js"
 export { camelCase } from "../utils/camel-case.js"
@@ -3535,6 +3537,161 @@ ava ("given an object without a placeholder", (t) => {
 #+end_src
 #+HTML: </details>
 
+**** parseSelectors
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-selectors.js
+import { getAncestors } from "../build/get-ancestors.js"
+import { getPlaceholders } from "../build/get-placeholders.js"
+import { getSelectors } from "../build/get-selectors.js"
+import { isObj } from "../utils/merge.js"
+import { parse } from "./parse.js"
+
+export function parseSelectors (params = {}) {
+  const property = params.property
+  const value = params.value
+
+  if ((/([#$%&*+,.>[^~]|:[a-z])/u).test (property) && isObj (value)) {
+    const emit = (/^[%:[]/u).test (property)
+
+    const selectors = getSelectors (property)
+      .reduce (function (a, b) {
+        return a.concat (getAncestors (params.selectors, [b]))
+      }, [])
+      .reduce (function (a, b) {
+        return a.concat ([getPlaceholders (b)])
+      }, [])
+
+    return parse ({ emit, "input": value, "media": params.media, selectors })
+  }
+
+  return params
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-selectors.test.js
+import ava from "ava"
+import { parseSelectors } from "./parse-selectors.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = parseSelectors ()
+
+  const expect = {}
+
+  t.deepEqual (actual, expect)
+})
+
+/* eslint-disable max-lines-per-function */
+ava ("given an object with valid selectors", (t) => {
+  const actual = parseSelectors ({
+    "property": "#root %stuff",
+    "value": {
+      "#products::after,%figure > &,#body~&+stuff": {
+        "background-color": "#f0f",
+        "display": "grid"
+      }
+    }
+  })
+
+  const expect = [
+    {
+      "block": [
+        {
+          "background-color": "#f0f"
+        }
+      ],
+      "emit": false,
+      "identifier": "jtj6u",
+      "input": {
+        "background-color": "#f0f"
+      },
+      "media": "",
+      "property": "backgroundColor",
+      "selectors": [
+        ["#root", " ", ".afdkz", " ", "#products", "::after"],
+        [".af3qz", ">", "#root", " ", ".afdkz"],
+        ["#body", "~", "#root", " ", ".afdkz", "+", "stuff"]
+      ],
+      "value": "#f0f"
+    },
+    {
+      "block": [
+        {
+          "display": "grid"
+        }
+      ],
+      "emit": false,
+      "identifier": "draen",
+      "input": {
+        "display": "grid"
+      },
+      "media": "",
+      "property": "display",
+      "selectors": [
+        ["#root", " ", ".afdkz", " ", "#products", "::after"],
+        [".af3qz", ">", "#root", " ", ".afdkz"],
+        ["#body", "~", "#root", " ", ".afdkz", "+", "stuff"]
+      ],
+      "value": "grid"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+/* eslint-enable max-lines-per-function */
+
+ava ("given an object with valid property and value", (t) => {
+  const actual = parseSelectors ({
+    "property": "@media (max-width: 767px)",
+    "value": {
+      "background-color": "#f0f"
+    }
+  })
+
+  const expect = {
+    "property": "@media (max-width: 767px)",
+    "value": {
+      "background-color": "#f0f"
+    }
+  }
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with valid pseudo-class selector", (t) => {
+  const actual = parseSelectors ({
+    "property": ":hover",
+    "value": {
+      "font-family": "Helvetica"
+    }
+  })
+
+  const expect = [
+    {
+      "block": [
+        {
+          "font-family": "Helvetica"
+        }
+      ],
+      "emit": true,
+      "identifier": "c53hh",
+      "input": {
+        "font-family": "Helvetica"
+      },
+      "media": "",
+      "property": "fontFamily",
+      "selectors": [[".c53hh", ":hover"]],
+      "value": "Helvetica"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
 **** parse
 
 #+HTML: <details>
@@ -3546,6 +3703,7 @@ import { parseInput } from "./parse-input.js"
 import { parseKeyframes } from "./parse-keyframes.js"
 import { parseMedia } from "./parse-media.js"
 import { parsePlaceholder } from "./parse-placeholder.js"
+import { parseSelectors } from "./parse-selectors.js"
 
 export function parse (params = {}) {
   return parseInput (params)
@@ -3566,6 +3724,9 @@ export function parse (params = {}) {
     }, [])
     .reduce (function (styles, style) {
       return styles.concat (parsePlaceholder (style))
+    }, [])
+    .reduce (function (styles, style) {
+      return styles.concat (parseSelectors (style))
     }, [])
 }
 #+end_src
