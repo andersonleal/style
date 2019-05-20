@@ -9,6 +9,7 @@
   - [[#license][License]]
   - [[#source][Source]]
     - [[#api][API]]
+      - [[#create][create]]
       - [[#css][css]]
       - [[#index][index]]
     - [[#build][Build]]
@@ -67,6 +68,60 @@ limitations under the License.
 ** Source
 
 *** API
+
+**** create
+
+#+HTML: <details>
+#+begin_src js :tangle src/api/create.js
+import { toPairs } from "../utils/to-pairs.js"
+import { css } from "./css.js"
+
+export function create (params = {}) {
+  return toPairs (params).reduce (function (styles, style) {
+    const property = style[0]
+    const value = style[1]
+
+    styles[property] = css (value)
+
+    return styles
+  }, {})
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/api/create.test.js
+import ava from "ava"
+import { create } from "./create.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = create ()
+  const expect = {}
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with simple declarations", (t) => {
+  const actual = create ({
+    "banner": {
+      "display": "block",
+      "width": "80%"
+    },
+    "product": {
+      "color": "#f00",
+      "display": ["block", "flex", "grid"]
+    }
+  })
+
+  const expect = {
+    "banner": "drtx9 dtndl",
+    "product": "jk2a9 dr4gk"
+  }
+
+  t.deepEqual (actual, expect)
+})
+#+end_src
+#+HTML: </details>
 
 **** css
 
@@ -166,6 +221,7 @@ ava ("given an object with simple declarations", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/api/index.js
+export { create } from "./create.js"
 export { css } from "./css.js"
 export { getAncestors } from "../build/get-ancestors.js"
 export { getBlockString } from "../build/get-block-string.js"
