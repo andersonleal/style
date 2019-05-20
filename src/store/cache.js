@@ -27,9 +27,10 @@ export function cache (params = {}) {
           "selectors": null
         },
         {
-          "selectors": addSelector
+          "selectors": (addSelector
             ? style.selectors.concat (params.selectors)
             : style.selectors
+          ).sort ()
         }
       )
     )
