@@ -16,5 +16,5 @@ export function getStyles (media = "", compact = true) {
     )
   })
 
-  return styles.join (compact ? "" : "\n")
+  return styles.sort ().join (compact ? "" : "\n")
 }
