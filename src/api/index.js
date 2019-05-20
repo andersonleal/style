@@ -18,6 +18,7 @@ export { parseIdentifier } from "../parse/parse-identifier.js"
 export { parseInput } from "../parse/parse-input.js"
 export { parseKeyframes } from "../parse/parse-keyframes.js"
 export { parseMedia } from "../parse/parse-media.js"
+export { parseNumbers } from "../parse/parse-numbers.js"
 export { parsePlaceholder } from "../parse/parse-placeholder.js"
 export { parseSelectors } from "../parse/parse-selectors.js"
 export { parseTypeSelector } from "../parse/parse-type-selector.js"
@@ -31,6 +32,7 @@ export {
   emptyObj,
   isArr,
   isDef,
+  isNum,
   isObj,
   merge,
   mergeArr,

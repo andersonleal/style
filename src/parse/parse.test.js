@@ -424,3 +424,26 @@ ava ("given an object with bare element selector", (t) => {
 
   t.deepEqual (actual, expect)
 })
+
+ava ("given an object with 'margin' property and integer value (1)", (t) => {
+  const actual = parse ({
+    "input": {
+      "margin": 10
+    }
+  })
+
+  const expect = [
+    {
+      "block": [{ "margin": "10px" }],
+      "emit": true,
+      "identifier": "e434t",
+      "input": { "margin": 10 },
+      "media": "",
+      "property": "margin",
+      "selectors": [[".e434t"]],
+      "value": "10px"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})

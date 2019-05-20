@@ -32,6 +32,7 @@
       - [[#parseinput][parseInput]]
       - [[#parsekeyframes][parseKeyframes]]
       - [[#parsemedia][parseMedia]]
+      - [[#parsenumbers][parseNumbers]]
       - [[#parseplaceholder][parsePlaceholder]]
       - [[#parseselectors][parseSelectors]]
       - [[#parsetypeselector][parseTypeSelector]]
@@ -185,6 +186,7 @@ export { parseIdentifier } from "../parse/parse-identifier.js"
 export { parseInput } from "../parse/parse-input.js"
 export { parseKeyframes } from "../parse/parse-keyframes.js"
 export { parseMedia } from "../parse/parse-media.js"
+export { parseNumbers } from "../parse/parse-numbers.js"
 export { parsePlaceholder } from "../parse/parse-placeholder.js"
 export { parseSelectors } from "../parse/parse-selectors.js"
 export { parseTypeSelector } from "../parse/parse-type-selector.js"
@@ -198,6 +200,7 @@ export {
   emptyObj,
   isArr,
   isDef,
+  isNum,
   isObj,
   merge,
   mergeArr,
@@ -3450,6 +3453,93 @@ ava ("given an object with complex valid media declaration", (t) => {
 #+end_src
 #+HTML: </details>
 
+**** parseNumbers
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-numbers.js
+import { kebabCase } from "../utils/kebab-case.js"
+import { isNum, merge } from "../utils/merge.js"
+
+export function parseNumbers (params = {}) {
+  const property = params.property
+  let value = params.value
+
+  /* eslint-disable-next-line max-len */
+  const regex = /(animationIterationCount|borderImage(?:Outset|Slice|Width)|box(?:(?:Flex)(?:Group)?|OrdinalGroup)|column(?:Count|s)|fillOpacity|floodOpacity|stopOpacity|stroke(?:Dash(?:array|offset)|Miterlimit|Opacity|Width)|flex(?:Grow|Positive|Shrink|Negative|Order)?\b|grid(?:Area|Column(?:End|Start)?|Row(?:End|Start)?)|fontWeight|line(?:Clamp|Height)|opacity|\border|orphans|tabSize|widows|zIndex|zoom)/u
+
+  if (!regex.test (property) && isNum (value) && value !== 0) {
+    value = "".concat (value, "px")
+
+    return merge (
+      params,
+      { "block": null },
+      { "block": [{ [kebabCase (property)]: value }], value }
+    )
+  }
+
+  return params
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-numbers.test.js
+import ava from "ava"
+import { parseNumbers } from "./parse-numbers.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = parseNumbers ()
+
+  const expect = {}
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with 'margin' property and integer value (1)", (t) => {
+  const actual = parseNumbers ({
+    "property": "margin",
+    "value": 10
+  })
+
+  const expect = {
+    "block": [{ "margin": "10px" }],
+    "property": "margin",
+    "value": "10px"
+  }
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with 'margin' property and integer value (2)", (t) => {
+  const actual = parseNumbers ({
+    "property": "margin",
+    "value": 0
+  })
+
+  const expect = {
+    "property": "margin",
+    "value": 0
+  }
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with 'order' property and integer values", (t) => {
+  const actual = parseNumbers ({
+    "property": "order",
+    "value": 10
+  })
+
+  const expect = {
+    "property": "order",
+    "value": 10
+  }
+
+  t.deepEqual (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
 **** parsePlaceholder
 
 #+HTML: <details>
@@ -3768,12 +3858,16 @@ import { parseIdentifier } from "./parse-identifier.js"
 import { parseInput } from "./parse-input.js"
 import { parseKeyframes } from "./parse-keyframes.js"
 import { parseMedia } from "./parse-media.js"
+import { parseNumbers } from "./parse-numbers.js"
 import { parsePlaceholder } from "./parse-placeholder.js"
 import { parseSelectors } from "./parse-selectors.js"
 import { parseTypeSelector } from "./parse-type-selector.js"
 
 export function parse (params = {}) {
   return parseInput (params)
+    .reduce (function (styles, style) {
+      return styles.concat (parseNumbers (style))
+    }, [])
     .reduce (function (styles, style) {
       return styles.concat (parseMedia (style))
     }, [])
@@ -4230,6 +4324,29 @@ ava ("given an object with bare element selector", (t) => {
 
   t.deepEqual (actual, expect)
 })
+
+ava ("given an object with 'margin' property and integer value (1)", (t) => {
+  const actual = parse ({
+    "input": {
+      "margin": 10
+    }
+  })
+
+  const expect = [
+    {
+      "block": [{ "margin": "10px" }],
+      "emit": true,
+      "identifier": "e434t",
+      "input": { "margin": 10 },
+      "media": "",
+      "property": "margin",
+      "selectors": [[".e434t"]],
+      "value": "10px"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
 #+end_src
 #+HTML: </details>
 
@@ -4594,6 +4711,10 @@ export const isArr = Array.isArray
 
 export function isDef (value) {
   return typeof value !== "undefined"
+}
+
+export function isNum (value) {
+  return typeof value === "number"
 }
 
 export function isObj (value) {

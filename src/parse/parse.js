@@ -4,12 +4,16 @@ import { parseIdentifier } from "./parse-identifier.js"
 import { parseInput } from "./parse-input.js"
 import { parseKeyframes } from "./parse-keyframes.js"
 import { parseMedia } from "./parse-media.js"
+import { parseNumbers } from "./parse-numbers.js"
 import { parsePlaceholder } from "./parse-placeholder.js"
 import { parseSelectors } from "./parse-selectors.js"
 import { parseTypeSelector } from "./parse-type-selector.js"
 
 export function parse (params = {}) {
   return parseInput (params)
+    .reduce (function (styles, style) {
+      return styles.concat (parseNumbers (style))
+    }, [])
     .reduce (function (styles, style) {
       return styles.concat (parseMedia (style))
     }, [])
