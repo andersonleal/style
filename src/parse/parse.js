@@ -6,6 +6,7 @@ import { parseKeyframes } from "./parse-keyframes.js"
 import { parseMedia } from "./parse-media.js"
 import { parsePlaceholder } from "./parse-placeholder.js"
 import { parseSelectors } from "./parse-selectors.js"
+import { parseTypeSelector } from "./parse-type-selector.js"
 
 export function parse (params = {}) {
   return parseInput (params)
@@ -29,5 +30,8 @@ export function parse (params = {}) {
     }, [])
     .reduce (function (styles, style) {
       return styles.concat (parseKeyframes (style))
+    }, [])
+    .reduce (function (styles, style) {
+      return styles.concat (parseTypeSelector (style))
     }, [])
 }

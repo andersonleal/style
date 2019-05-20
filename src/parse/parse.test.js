@@ -388,3 +388,39 @@ ava ("given an object with placeholder and selectors", (t) => {
 
   t.deepEqual (actual, expect)
 })
+
+ava ("given an object with bare element selector", (t) => {
+  const actual = parse ({
+    "input": {
+      "body": {
+        "margin": 0
+      },
+      "margin": 0
+    }
+  })
+
+  const expect = [
+    {
+      "block": [{ "margin": 0 }],
+      "emit": false,
+      "identifier": "e4838",
+      "input": { "margin": 0 },
+      "media": "",
+      "property": "margin",
+      "selectors": [["body"]],
+      "value": 0
+    },
+    {
+      "block": [{ "margin": 0 }],
+      "emit": true,
+      "identifier": "e482s",
+      "input": { "margin": 0 },
+      "media": "",
+      "property": "margin",
+      "selectors": [[".e482s"]],
+      "value": 0
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})

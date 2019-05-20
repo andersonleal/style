@@ -34,6 +34,7 @@
       - [[#parsemedia][parseMedia]]
       - [[#parseplaceholder][parsePlaceholder]]
       - [[#parseselectors][parseSelectors]]
+      - [[#parsetypeselector][parseTypeSelector]]
       - [[#parse-1][parse]]
     - [[#store][Store]]
       - [[#cache][cache]]
@@ -186,6 +187,7 @@ export { parseKeyframes } from "../parse/parse-keyframes.js"
 export { parseMedia } from "../parse/parse-media.js"
 export { parsePlaceholder } from "../parse/parse-placeholder.js"
 export { parseSelectors } from "../parse/parse-selectors.js"
+export { parseTypeSelector } from "../parse/parse-type-selector.js"
 export { cache } from "../store/cache.js"
 export { store } from "../store/store.js"
 export { camelCase } from "../utils/camel-case.js"
@@ -3692,6 +3694,70 @@ ava ("given an object with valid pseudo-class selector", (t) => {
 #+end_src
 #+HTML: </details>
 
+**** parseTypeSelector
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-type-selector.js
+import { isArr, isObj } from "../utils/merge.js"
+import { parse } from "./parse.js"
+
+export function parseTypeSelector (params = {}) {
+  const property = params.property
+  const value = params.value
+
+  if ((/^([a-z]+)$/u).test (property) && isObj (value) && !isArr (value)) {
+    return parse ({
+      "emit": false,
+      "input": value,
+      "media": params.media,
+      "selectors": [[property]]
+    })
+  }
+
+  return params
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/parse/parse-type-selector.test.js
+import ava from "ava"
+import { parseTypeSelector } from "./parse-type-selector.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = parseTypeSelector ()
+
+  const expect = {}
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with bare element selector", (t) => {
+  const actual = parseTypeSelector ({
+    "property": "body",
+    "value": {
+      "backgroundColor": "#f00"
+    }
+  })
+
+  const expect = [
+    {
+      "block": [{ "background-color": "#f00" }],
+      "emit": false,
+      "identifier": "jtem7",
+      "input": { "backgroundColor": "#f00" },
+      "media": "",
+      "property": "backgroundColor",
+      "selectors": [["body"]],
+      "value": "#f00"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
 **** parse
 
 #+HTML: <details>
@@ -3704,6 +3770,7 @@ import { parseKeyframes } from "./parse-keyframes.js"
 import { parseMedia } from "./parse-media.js"
 import { parsePlaceholder } from "./parse-placeholder.js"
 import { parseSelectors } from "./parse-selectors.js"
+import { parseTypeSelector } from "./parse-type-selector.js"
 
 export function parse (params = {}) {
   return parseInput (params)
@@ -3727,6 +3794,9 @@ export function parse (params = {}) {
     }, [])
     .reduce (function (styles, style) {
       return styles.concat (parseKeyframes (style))
+    }, [])
+    .reduce (function (styles, style) {
+      return styles.concat (parseTypeSelector (style))
     }, [])
 }
 #+end_src
@@ -4119,6 +4189,42 @@ ava ("given an object with placeholder and selectors", (t) => {
       "property": "color",
       "selectors": [[".jk2a9"]],
       "value": "#f00"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with bare element selector", (t) => {
+  const actual = parse ({
+    "input": {
+      "body": {
+        "margin": 0
+      },
+      "margin": 0
+    }
+  })
+
+  const expect = [
+    {
+      "block": [{ "margin": 0 }],
+      "emit": false,
+      "identifier": "e4838",
+      "input": { "margin": 0 },
+      "media": "",
+      "property": "margin",
+      "selectors": [["body"]],
+      "value": 0
+    },
+    {
+      "block": [{ "margin": 0 }],
+      "emit": true,
+      "identifier": "e482s",
+      "input": { "margin": 0 },
+      "media": "",
+      "property": "margin",
+      "selectors": [[".e482s"]],
+      "value": 0
     }
   ]
 
