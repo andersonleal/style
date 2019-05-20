@@ -11,6 +11,7 @@
     - [[#api][API]]
       - [[#create][create]]
       - [[#css][css]]
+      - [[#getcss][getCss]]
       - [[#index][index]]
     - [[#build][Build]]
       - [[#getancestors][getAncestors]]
@@ -341,12 +342,86 @@ ava ("given an object with simple declarations", (t) => {
 #+end_src
 #+HTML: </details>
 
+**** getCss
+
+#+HTML: <details>
+#+begin_src js :tangle src/api/get-css.js
+import { getStyles, store } from "../api/index.js"
+
+export function getCss (compact = true) {
+  const styles = []
+
+  for (const media of store.keys ()) {
+    /* eslint-disable no-nested-ternary */
+    styles.push (
+      media ? "@media ".concat (media, compact ? "{" : " { ") : "",
+      getStyles (media, compact),
+      media ? compact ? "}" : " }" : ""
+    )
+    /* eslint-enable no-nested-ternary */
+  }
+
+  return styles.join ("")
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/api/get-css.test.js
+import ava from "ava"
+import { css } from "./css.js"
+import { getCss } from "./get-css.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = getCss ()
+  const expect = ""
+
+  t.is (actual, expect)
+})
+
+/* eslint-disable sort-keys */
+ava ("given a sample declaration", (t) => {
+  css ({
+    "backgroundColor": "#0f0",
+    "@media (min-width: 768px)": {
+      "backgroundColor": "#f00"
+    }
+  })
+
+  const actual = getCss ()
+
+  const expect =
+    ".jtz4h{background-color:#0f0}@media (min-width: 768px){.jtdpi{background-color:#f00}}"
+
+  t.is (actual, expect)
+})
+
+ava ("given a sample declaration (compact false)", (t) => {
+  css ({
+    "backgroundColor": "#0f0",
+    "@media (min-width: 768px)": {
+      "backgroundColor": "#f00"
+    }
+  })
+
+  const actual = getCss (false)
+
+  const expect =
+    ".jtz4h { background-color: #0f0 }@media (min-width: 768px) { .jtdpi { background-color: #f00 } }"
+
+  t.is (actual, expect)
+})
+/* eslint-enable sort-keys */
+#+end_src
+#+HTML: </details>
+
 **** index
 
 #+HTML: <details>
 #+begin_src js :tangle src/api/index.js
 export { create } from "./create.js"
 export { css } from "./css.js"
+export { getCss } from "./get-css.js"
 export { getAncestors } from "../build/get-ancestors.js"
 export { getBlockString } from "../build/get-block-string.js"
 export { getClassName } from "../build/get-class-name.js"
