@@ -13,6 +13,7 @@
       - [[#css][css]]
       - [[#getcss][getCss]]
       - [[#index][index]]
+      - [[#style][style]]
     - [[#build][Build]]
       - [[#getancestors][getAncestors]]
       - [[#getblockstring][getBlockString]]
@@ -462,6 +463,16 @@ export {
   mergeObj
 } from "../utils/merge.js"
 export { toPairs } from "../utils/to-pairs.js"
+#+end_src
+#+HTML: </details>
+
+**** style
+
+#+HTML: <details>
+#+begin_src js :tangle src/api/style.js
+export { create } from "./create.js"
+export { css } from "./css.js"
+export { getCss } from "./get-css.js"
 #+end_src
 #+HTML: </details>
 

@@ -65,11 +65,13 @@
   },
   "eslintIgnore": [
     "esm/*",
-    "umd/*"
+    "umd/*",
+    "web/*"
   ],
   "files": [
     "esm/style.js",
-    "umd/style.js"
+    "umd/style.js",
+    "web/style.js"
   ],
   "homepage": "https://github.com/ptb/style#readme",
   "keywords": [],

@@ -49,5 +49,24 @@ export default [
         "sourcemap": false
       })
     ]
+  },
+  {
+    "input": "src/api/style.js",
+    "output": {
+      "banner": banner,
+      "file": pkg.browser,
+      "format": "esm"
+    },
+    "plugins": [
+      terser ({
+        "mangle": {
+          "toplevel": true
+        },
+        "output": {
+          "comments": /^!/u
+        },
+        "sourcemap": false
+      })
+    ]
   }
 ]
