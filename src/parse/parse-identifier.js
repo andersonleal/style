@@ -1,6 +1,4 @@
-import { getPropertyId } from "../build/get-property-id.js"
-import { getStringHash } from "../build/get-string-hash.js"
-import { isDef, merge } from "../utils/merge.js"
+import { getPropertyId, getStringHash, isDef, merge } from "../api/index.js"
 
 export function parseIdentifier (params = {}) {
   if (params.property) {

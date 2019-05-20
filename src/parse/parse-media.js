@@ -1,6 +1,4 @@
-import { kebabCase } from "../utils/kebab-case.js"
-import { isObj } from "../utils/merge.js"
-import { parse } from "./parse.js"
+import { isObj, kebabCase, parse } from "../api/index.js"
 
 export function parseMedia (params = {}) {
   const property = params.property

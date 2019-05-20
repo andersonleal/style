@@ -1,5 +1,4 @@
-import { isArr, isObj } from "../utils/merge.js"
-import { parse } from "./parse.js"
+import { isArr, isObj, parse } from "../api/index.js"
 
 export function parseTypeSelector (params = {}) {
   const property = params.property

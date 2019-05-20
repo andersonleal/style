@@ -1,6 +1,4 @@
-import { store } from "../store/store.js"
-import { getBlockString } from "./get-block-string.js"
-import { getSelectorsString } from "./get-selectors-string.js"
+import { getBlockString, getSelectorsString, store } from "../api/index.js"
 
 export function getStyles (media = "", compact = true) {
   const styles = []

@@ -1,7 +1,4 @@
-import { getStyles } from "../build/get-styles.js"
-import { store } from "../store/store.js"
-import { canUseDom } from "./can-use-dom.js"
-import { getStyleElement } from "./get-style-element.js"
+import { canUseDom, getStyleElement, getStyles, store } from "../api/index.js"
 
 /* istanbul ignore next */
 

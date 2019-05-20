@@ -1,13 +1,15 @@
-import { parseFallbacks } from "./parse-fallbacks.js"
-import { parseFontFace } from "./parse-font-face.js"
-import { parseIdentifier } from "./parse-identifier.js"
-import { parseInput } from "./parse-input.js"
-import { parseKeyframes } from "./parse-keyframes.js"
-import { parseMedia } from "./parse-media.js"
-import { parseNumbers } from "./parse-numbers.js"
-import { parsePlaceholder } from "./parse-placeholder.js"
-import { parseSelectors } from "./parse-selectors.js"
-import { parseTypeSelector } from "./parse-type-selector.js"
+import {
+  parseFallbacks,
+  parseFontFace,
+  parseIdentifier,
+  parseInput,
+  parseKeyframes,
+  parseMedia,
+  parseNumbers,
+  parsePlaceholder,
+  parseSelectors,
+  parseTypeSelector
+} from "../api/index.js"
 
 export function parse (params = {}) {
   return parseInput (params)

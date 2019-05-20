@@ -1,8 +1,10 @@
-import { getAncestors } from "../build/get-ancestors.js"
-import { getPlaceholders } from "../build/get-placeholders.js"
-import { getSelectors } from "../build/get-selectors.js"
-import { isObj } from "../utils/merge.js"
-import { parse } from "./parse.js"
+import {
+  getAncestors,
+  getPlaceholders,
+  getSelectors,
+  isObj,
+  parse
+} from "../api/index.js"
 
 export function parseSelectors (params = {}) {
   const property = params.property

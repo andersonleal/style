@@ -1,7 +1,11 @@
-import { kebabCase } from "../utils/kebab-case.js"
-import { isArr, isObj, merge } from "../utils/merge.js"
-import { toPairs } from "../utils/to-pairs.js"
-import { parseIdentifier } from "./parse-identifier.js"
+import {
+  isArr,
+  isObj,
+  kebabCase,
+  merge,
+  parseIdentifier,
+  toPairs
+} from "../api/index.js"
 
 export function parseFontFace (params = {}) {
   const property = params.property

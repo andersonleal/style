@@ -1,4 +1,4 @@
-import { camelCase } from "../utils/camel-case.js"
+import { camelCase } from "../api/index.js"
 
 /**
  * @param {string} propertyName

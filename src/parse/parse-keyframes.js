@@ -1,7 +1,10 @@
-import { kebabCase } from "../utils/kebab-case.js"
-import { isObj, merge } from "../utils/merge.js"
-import { toPairs } from "../utils/to-pairs.js"
-import { parseIdentifier } from "./parse-identifier.js"
+import {
+  isObj,
+  kebabCase,
+  merge,
+  parseIdentifier,
+  toPairs
+} from "../api/index.js"
 
 export function parseKeyframes (params = {}) {
   const property = params.property

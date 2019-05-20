@@ -1,5 +1,4 @@
-import { kebabCase } from "../utils/kebab-case.js"
-import { isNum, merge } from "../utils/merge.js"
+import { isNum, kebabCase, merge } from "../api/index.js"
 
 export function parseNumbers (params = {}) {
   const property = params.property

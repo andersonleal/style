@@ -1,4 +1,4 @@
-import { parseIdentifier } from "../parse/parse-identifier.js"
+import { parseIdentifier } from "../api/index.js"
 
 export function getPlaceholders (selectors = []) {
   return selectors.map (function (selector) {

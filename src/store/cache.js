@@ -1,5 +1,4 @@
-import { store } from "./store.js"
-import { merge } from "../utils/merge.js"
+import { merge, store } from "../api/index.js"
 
 export function cache (params = {}) {
   const block = params.block || []

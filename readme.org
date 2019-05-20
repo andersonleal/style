@@ -73,8 +73,7 @@ limitations under the License.
 
 #+HTML: <details>
 #+begin_src js :tangle src/api/create.js
-import { toPairs } from "../utils/to-pairs.js"
-import { css } from "./css.js"
+import { css, toPairs } from "./index.js"
 
 export function create (params = {}) {
   return toPairs (params).reduce (function (styles, style) {
@@ -255,10 +254,7 @@ ava ("given an object with multiple 'fontFamily' declarations", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/api/css.js
-import { getClassName } from "../build/get-class-name.js"
-import { update } from "../client/update.js"
-import { parse } from "../parse/parse.js"
-import { cache } from "../store/cache.js"
+import { cache, getClassName, parse, update } from "./index.js"
 
 export function css (params = {}) {
   return parse ({ "input": params })
@@ -502,9 +498,7 @@ ava ("given an array of selectors with array of ancestors", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/build/get-block-string.js
-import { kebabCase } from "../utils/kebab-case.js"
-import { isObj } from "../utils/merge.js"
-import { toPairs } from "../utils/to-pairs.js"
+import { isObj, kebabCase, toPairs } from "../api/index.js"
 
 export function getBlockString (params = {}, compact = true) {
   const block = params.block || []
@@ -739,7 +733,7 @@ ava ("given an object with identifier and emit false", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/build/get-placeholders.js
-import { parseIdentifier } from "../parse/parse-identifier.js"
+import { parseIdentifier } from "../api/index.js"
 
 export function getPlaceholders (selectors = []) {
   return selectors.map (function (selector) {
@@ -783,7 +777,7 @@ ava ("given an array of selectors with placeholders", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/build/get-property-id.js
-import { camelCase } from "../utils/camel-case.js"
+import { camelCase } from "../api/index.js"
 
 /**
  * @param {string} propertyName
@@ -1907,9 +1901,7 @@ ava ("given a simple string (2)", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/build/get-styles.js
-import { store } from "../store/store.js"
-import { getBlockString } from "./get-block-string.js"
-import { getSelectorsString } from "./get-selectors-string.js"
+import { getBlockString, getSelectorsString, store } from "../api/index.js"
 
 export function getStyles (media = "", compact = true) {
   const styles = []
@@ -2278,10 +2270,7 @@ ava.serial (
 
 #+HTML: <details>
 #+begin_src js :tangle src/client/update.js
-import { getStyles } from "../build/get-styles.js"
-import { store } from "../store/store.js"
-import { canUseDom } from "./can-use-dom.js"
-import { getStyleElement } from "./get-style-element.js"
+import { canUseDom, getStyleElement, getStyles, store } from "../api/index.js"
 
 /* istanbul ignore next */
 
@@ -2413,9 +2402,7 @@ ava ("2", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse-fallbacks.js
-import { kebabCase } from "../utils/kebab-case.js"
-import { isObj, merge } from "../utils/merge.js"
-import { parseFontFace } from "./parse-font-face.js"
+import { isObj, kebabCase, merge, parseFontFace } from "../api/index.js"
 
 /* eslint-disable max-lines-per-function */
 export function parseFallbacks (params = {}, compact = true) {
@@ -2755,10 +2742,14 @@ ava ("given an object with display property and array value", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse-font-face.js
-import { kebabCase } from "../utils/kebab-case.js"
-import { isArr, isObj, merge } from "../utils/merge.js"
-import { toPairs } from "../utils/to-pairs.js"
-import { parseIdentifier } from "./parse-identifier.js"
+import {
+  isArr,
+  isObj,
+  kebabCase,
+  merge,
+  parseIdentifier,
+  toPairs
+} from "../api/index.js"
 
 export function parseFontFace (params = {}) {
   const property = params.property
@@ -2968,9 +2959,7 @@ ava ("given an object with valid font-face declaration (3)", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse-identifier.js
-import { getPropertyId } from "../build/get-property-id.js"
-import { getStringHash } from "../build/get-string-hash.js"
-import { isDef, merge } from "../utils/merge.js"
+import { getPropertyId, getStringHash, isDef, merge } from "../api/index.js"
 
 export function parseIdentifier (params = {}) {
   if (params.property) {
@@ -3294,10 +3283,7 @@ ava (
 
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse-input.js
-import { camelCase } from "../utils/camel-case.js"
-import { kebabCase } from "../utils/kebab-case.js"
-import { isDef } from "../utils/merge.js"
-import { toPairs } from "../utils/to-pairs.js"
+import { camelCase, isDef, kebabCase, toPairs } from "../api/index.js"
 
 export function parseInput (params = {}) {
   const emit = isDef (params.emit) ? params.emit : true
@@ -3391,10 +3377,13 @@ ava ("given an object with multiple properties and values", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse-keyframes.js
-import { kebabCase } from "../utils/kebab-case.js"
-import { isObj, merge } from "../utils/merge.js"
-import { toPairs } from "../utils/to-pairs.js"
-import { parseIdentifier } from "./parse-identifier.js"
+import {
+  isObj,
+  kebabCase,
+  merge,
+  parseIdentifier,
+  toPairs
+} from "../api/index.js"
 
 export function parseKeyframes (params = {}) {
   const property = params.property
@@ -3539,9 +3528,7 @@ ava ("given an object with valid keyframes declaration (2)", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse-media.js
-import { kebabCase } from "../utils/kebab-case.js"
-import { isObj } from "../utils/merge.js"
-import { parse } from "./parse.js"
+import { isObj, kebabCase, parse } from "../api/index.js"
 
 export function parseMedia (params = {}) {
   const property = params.property
@@ -3641,8 +3628,7 @@ ava ("given an object with complex valid media declaration", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse-numbers.js
-import { kebabCase } from "../utils/kebab-case.js"
-import { isNum, merge } from "../utils/merge.js"
+import { isNum, kebabCase, merge } from "../api/index.js"
 
 export function parseNumbers (params = {}) {
   const property = params.property
@@ -3728,8 +3714,7 @@ ava ("given an object with 'order' property and integer values", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse-placeholder.js
-import { merge } from "../utils/merge.js"
-import { parseIdentifier } from "./parse-identifier.js"
+import { merge, parseIdentifier } from "../api/index.js"
 
 export function parsePlaceholder (params = {}) {
   const property = params.property
@@ -3817,11 +3802,13 @@ ava ("given an object without a placeholder", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse-selectors.js
-import { getAncestors } from "../build/get-ancestors.js"
-import { getPlaceholders } from "../build/get-placeholders.js"
-import { getSelectors } from "../build/get-selectors.js"
-import { isObj } from "../utils/merge.js"
-import { parse } from "./parse.js"
+import {
+  getAncestors,
+  getPlaceholders,
+  getSelectors,
+  isObj,
+  parse
+} from "../api/index.js"
 
 export function parseSelectors (params = {}) {
   const property = params.property
@@ -3972,8 +3959,7 @@ ava ("given an object with valid pseudo-class selector", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse-type-selector.js
-import { isArr, isObj } from "../utils/merge.js"
-import { parse } from "./parse.js"
+import { isArr, isObj, parse } from "../api/index.js"
 
 export function parseTypeSelector (params = {}) {
   const property = params.property
@@ -4036,16 +4022,18 @@ ava ("given an object with bare element selector", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/parse/parse.js
-import { parseFallbacks } from "./parse-fallbacks.js"
-import { parseFontFace } from "./parse-font-face.js"
-import { parseIdentifier } from "./parse-identifier.js"
-import { parseInput } from "./parse-input.js"
-import { parseKeyframes } from "./parse-keyframes.js"
-import { parseMedia } from "./parse-media.js"
-import { parseNumbers } from "./parse-numbers.js"
-import { parsePlaceholder } from "./parse-placeholder.js"
-import { parseSelectors } from "./parse-selectors.js"
-import { parseTypeSelector } from "./parse-type-selector.js"
+import {
+  parseFallbacks,
+  parseFontFace,
+  parseIdentifier,
+  parseInput,
+  parseKeyframes,
+  parseMedia,
+  parseNumbers,
+  parsePlaceholder,
+  parseSelectors,
+  parseTypeSelector
+} from "../api/index.js"
 
 export function parse (params = {}) {
   return parseInput (params)
@@ -4540,8 +4528,7 @@ ava ("given an object with 'margin' property and integer value (1)", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/store/cache.js
-import { store } from "./store.js"
-import { merge } from "../utils/merge.js"
+import { merge, store } from "../api/index.js"
 
 export function cache (params = {}) {
   const block = params.block || []

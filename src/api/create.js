@@ -1,5 +1,4 @@
-import { toPairs } from "../utils/to-pairs.js"
-import { css } from "./css.js"
+import { css, toPairs } from "./index.js"
 
 export function create (params = {}) {
   return toPairs (params).reduce (function (styles, style) {

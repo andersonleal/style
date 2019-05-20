@@ -1,5 +1,4 @@
-import { merge } from "../utils/merge.js"
-import { parseIdentifier } from "./parse-identifier.js"
+import { merge, parseIdentifier } from "../api/index.js"
 
 export function parsePlaceholder (params = {}) {
   const property = params.property

@@ -1,6 +1,4 @@
-import { kebabCase } from "../utils/kebab-case.js"
-import { isObj, merge } from "../utils/merge.js"
-import { parseFontFace } from "./parse-font-face.js"
+import { isObj, kebabCase, merge, parseFontFace } from "../api/index.js"
 
 /* eslint-disable max-lines-per-function */
 export function parseFallbacks (params = {}, compact = true) {

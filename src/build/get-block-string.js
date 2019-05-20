@@ -1,6 +1,4 @@
-import { kebabCase } from "../utils/kebab-case.js"
-import { isObj } from "../utils/merge.js"
-import { toPairs } from "../utils/to-pairs.js"
+import { isObj, kebabCase, toPairs } from "../api/index.js"
 
 export function getBlockString (params = {}, compact = true) {
   const block = params.block || []
