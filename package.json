@@ -22,6 +22,16 @@
     "verbose": true
   },
   "browser": "web/style.js",
+  "browserslist": [
+    "Android >= 71",
+    "Chrome >= 49",
+    "Edge >= 16",
+    "Firefox >= 52",
+    "IE >= 11",
+    "iOS >= 9",
+    "Safari >= 10.1",
+    "Samsung >= 7.4"
+  ],
   "bugs": {
     "url": "https://github.com/ptb/style/issues"
   },
@@ -153,5 +163,5 @@
     "test": "nyc ava",
     "tidy": "prettier-eslint --write \"src/**/*.js\""
   },
-  "version": "2019.5.21-0"
+  "version": "2019.5.21-1"
 }

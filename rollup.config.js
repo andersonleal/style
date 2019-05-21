@@ -11,6 +11,12 @@ const banner = "/*! @copyright "
   .concat (pkg.license)
   .concat (" | @link ")
   .concat (pkg.homepage)
+  .concat ("/tree/")
+  .concat (
+    execSync ("git rev-parse HEAD")
+      .toString ()
+      .slice (0, 7)
+  )
   .concat (" | @version ")
   .concat (
     new Date ()
@@ -18,12 +24,6 @@ const banner = "/*! @copyright "
       .split ("T")
       .shift ()
       .replace (/-/gu, ".")
-  )
-  .concat ("-")
-  .concat (
-    execSync ("git rev-parse HEAD")
-      .toString ()
-      .slice (0, 7)
   )
   .concat (" */")
 
@@ -81,7 +81,8 @@ export default [
                 "edge": "16",
                 "firefox": "52",
                 "ie": "11",
-                "safari": "9",
+                "ios": "9",
+                "safari": "10.1",
                 "samsung": "7.4"
               },
               "useBuiltIns": "usage"
