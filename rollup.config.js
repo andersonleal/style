@@ -1,4 +1,7 @@
 import { execSync } from "child_process"
+import babel from "rollup-plugin-babel"
+import commonjs from "rollup-plugin-commonjs"
+import nodeResolve from "rollup-plugin-node-resolve"
 import { terser } from "rollup-plugin-terser"
 import pkg from "./package.json"
 
@@ -53,6 +56,42 @@ export default [
       "name": "amory"
     },
     "plugins": [
+      nodeResolve (),
+      babel ({
+        "exclude": "node_modules/**",
+        "plugins": [
+          [
+            "@babel/plugin-transform-runtime",
+            {
+              "corejs": 3,
+              "useESModules": true
+            }
+          ]
+        ],
+        "presets": [
+          [
+            "@babel/preset-env",
+            {
+              "corejs": 3,
+              "modules": false,
+              "spec": true,
+              "targets": {
+                "android": "71",
+                "chrome": "49",
+                "edge": "16",
+                "firefox": "52",
+                "ie": "11",
+                "safari": "9",
+                "samsung": "7.4"
+              },
+              "useBuiltIns": "usage"
+            }
+          ],
+          "babel-preset-minify"
+        ],
+        "runtimeHelpers": true
+      }),
+      commonjs (),
       terser ({
         "mangle": {
           "toplevel": true
