@@ -2,13 +2,27 @@ import { execSync } from "child_process"
 import { terser } from "rollup-plugin-terser"
 import pkg from "./package.json"
 
-const banner = `/*! @copyright Peter T Bosse II | @license Apache-2.0 | @link github.com/ptb/style | @version ${new Date ()
-  .toISOString ()
-  .split ("T")
-  .shift ()
-  .replace (/-/gu, ".")}-${execSync ("git rev-parse HEAD")
-  .toString ()
-  .slice (0, 7)} */`
+const banner = "/*! @copyright "
+  .concat (pkg.author.name)
+  .concat (" | @license ")
+  .concat (pkg.license)
+  .concat (" | @link ")
+  .concat (pkg.homepage)
+  .concat (" | @version ")
+  .concat (
+    new Date ()
+      .toISOString ()
+      .split ("T")
+      .shift ()
+      .replace (/-/gu, ".")
+  )
+  .concat ("-")
+  .concat (
+    execSync ("git rev-parse HEAD")
+      .toString ()
+      .slice (0, 7)
+  )
+  .concat (" */")
 
 export default [
   {
