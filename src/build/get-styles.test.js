@@ -2,6 +2,25 @@ import ava from "ava"
 import { cache } from "../store/cache.js"
 import { getStyles } from "./get-styles.js"
 
+ava.serial ("given an object with placeholder property", (t) => {
+  cache ({
+    "block": [{ "%figure": true }],
+    "emit": true,
+    "identifier": "af3qz",
+    "input": { "%figure": true },
+    "media": "",
+    "property": "%figure",
+    "selectors": [],
+    "value": true
+  })
+
+  const actual = getStyles ()
+
+  const expect = ""
+
+  t.is (actual, expect)
+})
+
 ava.serial ("given an object with simple property and value", (t) => {
   cache ({
     "block": [
