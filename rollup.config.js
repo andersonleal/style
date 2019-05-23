@@ -18,13 +18,7 @@ const banner = "/*! @copyright "
       .slice (0, 7)
   )
   .concat (" | @version ")
-  .concat (
-    new Date ()
-      .toISOString ()
-      .split ("T")
-      .shift ()
-      .replace (/-/gu, ".")
-  )
+  .concat (pkg.version)
   .concat (" */")
 
 export default [
