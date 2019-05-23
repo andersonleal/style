@@ -6,6 +6,9 @@
 
 ** Table of Contents                                                   :TOC:
 - [[#amorystyle][@amory/style]]
+  - [[#usage][Usage]]
+    - [[#with-nextjs][With Next.js]]
+      - [[#pages_documentjs][pages/_document.js]]
   - [[#license][License]]
   - [[#source][Source]]
     - [[#api][API]]
@@ -48,6 +51,38 @@
       - [[#kebabcase][kebabCase]]
       - [[#merge][merge]]
       - [[#topairs][toPairs]]
+
+** Usage
+
+*** With Next.js
+
+**** pages/_document.js
+
+#+begin_src js
+import { getCss } from "@amory/style"
+import Document from "next/document"
+import React from "react"
+
+export default class extends Document {
+  static getInitialProps ({ renderPage }) {
+    const initialProps = renderPage (
+      (App) => (props) => (<App {...props} />)
+    )
+
+    return {
+      ... initialProps,
+      "styles": (
+        <React.Fragment>
+          {initialProps.styles}
+          <style data-creator="@amory/style">
+            {getCss ()}
+          </style>
+        </React.Fragment>
+      )
+    }
+  }
+}
+#+end_src
 
 ** License
 
