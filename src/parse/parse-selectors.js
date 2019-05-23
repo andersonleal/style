@@ -3,6 +3,7 @@ import {
   getPlaceholders,
   getSelectors,
   isObj,
+  kebabCase,
   parse
 } from "../api/index.js"
 
@@ -13,7 +14,7 @@ export function parseSelectors (params = {}) {
   if ((/([#$%&*+,.>[^~]|:[a-z])/u).test (property) && isObj (value)) {
     const emit = (/^:/u).test (property)
 
-    const selectors = getSelectors (property)
+    const selectors = getSelectors (kebabCase (property))
       .reduce (function (a, b) {
         return a.concat (getAncestors (params.selectors, [b]))
       }, [])

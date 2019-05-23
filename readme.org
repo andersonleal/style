@@ -74,9 +74,9 @@ export default class extends Document {
       "styles": (
         <React.Fragment>
           {initialProps.styles}
-          <style data-creator="@amory/style">
-            {getCss ()}
-          </style>
+          <style
+            dangerouslySetInnerHTML={{ __html: getCss() }}
+            data-creator="@amory/style" />
         </React.Fragment>
       )
     }
@@ -3892,6 +3892,7 @@ import {
   getPlaceholders,
   getSelectors,
   isObj,
+  kebabCase,
   parse
 } from "../api/index.js"
 
@@ -3902,7 +3903,7 @@ export function parseSelectors (params = {}) {
   if ((/([#$%&*+,.>[^~]|:[a-z])/u).test (property) && isObj (value)) {
     const emit = (/^:/u).test (property)
 
-    const selectors = getSelectors (property)
+    const selectors = getSelectors (kebabCase (property))
       .reduce (function (a, b) {
         return a.concat (getAncestors (params.selectors, [b]))
       }, [])
