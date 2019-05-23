@@ -384,17 +384,15 @@ ava ("given an object with simple declarations", (t) => {
 #+begin_src js :tangle src/api/get-css.js
 import { getStyles, store } from "../api/index.js"
 
-export function getCss (compact = true) {
+export function getCss () {
   const styles = []
 
   for (const media of store.keys ()) {
-    /* eslint-disable no-nested-ternary */
     styles.push (
-      media ? "@media ".concat (media, compact ? "{" : " { ") : "",
-      getStyles (media, compact),
-      media ? compact ? "}" : " }" : ""
+      media ? "@media ".concat (media, "{") : "",
+      getStyles (media),
+      media ? "}" : ""
     )
-    /* eslint-enable no-nested-ternary */
   }
 
   return styles.join ("")
@@ -428,22 +426,6 @@ ava ("given a sample declaration", (t) => {
 
   const expect =
     ".jtz4h{background-color:#0f0}@media (min-width: 768px){.jtdpi{background-color:#f00}}"
-
-  t.is (actual, expect)
-})
-
-ava ("given a sample declaration (compact false)", (t) => {
-  css ({
-    "backgroundColor": "#0f0",
-    "@media (min-width: 768px)": {
-      "backgroundColor": "#f00"
-    }
-  })
-
-  const actual = getCss (false)
-
-  const expect =
-    ".jtz4h { background-color: #0f0 }@media (min-width: 768px) { .jtdpi { background-color: #f00 } }"
 
   t.is (actual, expect)
 })
@@ -2024,21 +2006,18 @@ ava ("given a simple string (2)", (t) => {
 #+begin_src js :tangle src/build/get-styles.js
 import { getBlockString, getSelectorsString, store } from "../api/index.js"
 
-export function getStyles (media = "", compact = true) {
+export function getStyles (media = "") {
   const styles = []
 
   store.get (media).forEach (function (style) {
-    styles.push (
-      "".concat (
-        getSelectorsString (style, compact),
-        compact ? "{" : " { ",
-        getBlockString (style, compact),
-        compact ? "}" : " }"
+    if (!(/^%/u).test (style.property)) {
+      styles.push (
+        "".concat (getSelectorsString (style), "{", getBlockString (style), "}")
       )
-    )
+    }
   })
 
-  return styles.sort ().join (compact ? "" : "\n")
+  return styles.sort ().join ("")
 }
 #+end_src
 #+HTML: </details>
@@ -2048,6 +2027,25 @@ export function getStyles (media = "", compact = true) {
 import ava from "ava"
 import { cache } from "../store/cache.js"
 import { getStyles } from "./get-styles.js"
+
+ava.serial ("given an object with placeholder property", (t) => {
+  cache ({
+    "block": [{ "%figure": true }],
+    "emit": true,
+    "identifier": "af3qz",
+    "input": { "%figure": true },
+    "media": "",
+    "property": "%figure",
+    "selectors": [],
+    "value": true
+  })
+
+  const actual = getStyles ()
+
+  const expect = ""
+
+  t.is (actual, expect)
+})
 
 ava.serial ("given an object with simple property and value", (t) => {
   cache ({
@@ -2068,29 +2066,6 @@ ava.serial ("given an object with simple property and value", (t) => {
 
   t.is (actual, expect)
 })
-
-ava.serial (
-  "given an object with simple property and value (compact false)",
-  (t) => {
-    cache ({
-      "block": [
-        {
-          "background-color": "#f00"
-        }
-      ],
-      "identifier": "jt2a9",
-      "property": "backgroundColor",
-      "selectors": [[".jt2a9"]],
-      "value": "#f00"
-    })
-
-    const actual = getStyles ("", false)
-
-    const expect = ".jt2a9 { background-color: #f00 }"
-
-    t.is (actual, expect)
-  }
-)
 
 ava.serial ("given an object with simple property and value (2)", (t) => {
   cache ({
@@ -2116,17 +2091,6 @@ ava.serial ("given an object with simple property and value (2)", (t) => {
 
   t.is (actual, expect)
 })
-
-ava.serial (
-  "given an object with simple property and value (compact false) (2)",
-  (t) => {
-    const actual = getStyles ("", false)
-
-    const expect = ".jt2a9, .jtdzh:hover { background-color: #f00 }"
-
-    t.is (actual, expect)
-  }
-)
 #+end_src
 #+HTML: </details>
 
