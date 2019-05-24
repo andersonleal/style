@@ -1,4 +1,5 @@
 import ava from "ava"
+import { parsePlaceholder } from "./parse-placeholder.js"
 import { parseSelectors } from "./parse-selectors.js"
 
 ava ("given undefined arguments", (t) => {
@@ -133,6 +134,71 @@ ava ("given an object with valid attribute selector", (t) => {
       "media": "",
       "property": "backgroundColor",
       "selectors": [["[aria-expanded=true]"]],
+      "value": "#f00"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with valid placeholder selector", (t) => {
+  const actual = parsePlaceholder ({
+    "property": "%fieldset",
+    "value": true
+  })
+
+  const expect = {
+    "identifier": "afvip",
+    "property": "%fieldset",
+    "value": true
+  }
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with valid placeholder selector (2)", (t) => {
+  const actual = parseSelectors ({
+    "property": "%fieldset",
+    "value": {
+      "&[aria-expanded=true]": {
+        "backgroundColor": "#f00"
+      }
+    }
+  })
+
+  const expect = [
+    {
+      "block": [{ "background-color": "#f00" }],
+      "emit": false,
+      "identifier": "jt8ph",
+      "input": { "backgroundColor": "#f00" },
+      "media": "",
+      "property": "backgroundColor",
+      "selectors": [[".afvip", "[aria-expanded=true]"]],
+      "value": "#f00"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given an object with valid placeholder with attribute selector", (t) => {
+  const actual = parseSelectors ({
+    "property": "%fieldset[aria-expanded=true]",
+    "value": {
+      "backgroundColor": "#f00"
+    }
+  })
+
+  const expect = [
+    {
+      "block": [{ "background-color": "#f00" }],
+      "emit": false,
+      "identifier": "jt8ph",
+      "input": { "backgroundColor": "#f00" },
+      "media": "",
+      "property": "backgroundColor",
+      "selectors": [[".afvip", "[aria-expanded=true]"]],
       "value": "#f00"
     }
   ]
