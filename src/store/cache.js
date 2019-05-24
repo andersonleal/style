@@ -29,7 +29,9 @@ export function cache (params = {}) {
           "selectors": (addSelector
             ? style.selectors.concat (params.selectors)
             : style.selectors
-          ).sort ()
+          ).sort (function (a, b) {
+            return a.length - b.length || a.join ("").localeCompare (b.join (""))
+          })
         }
       )
     )

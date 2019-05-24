@@ -115,3 +115,27 @@ ava ("given an object with valid pseudo-class selector", (t) => {
 
   t.deepEqual (actual, expect)
 })
+
+ava ("given an object with valid attribute selector", (t) => {
+  const actual = parseSelectors ({
+    "property": "[aria-expanded=true]",
+    "value": {
+      "backgroundColor": "#f00"
+    }
+  })
+
+  const expect = [
+    {
+      "block": [{ "background-color": "#f00" }],
+      "emit": false,
+      "identifier": "jtrn7",
+      "input": { "backgroundColor": "#f00" },
+      "media": "",
+      "property": "backgroundColor",
+      "selectors": [["[aria-expanded=true]"]],
+      "value": "#f00"
+    }
+  ]
+
+  t.deepEqual (actual, expect)
+})
