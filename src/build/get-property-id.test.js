@@ -49,3 +49,17 @@ ava ("given a string with a valid property name (2)", (t) => {
 
   t.is (actual, expect)
 })
+
+ava ("given a string with a prefixed property name (1)", (t) => {
+  const actual = getPropertyId ("-webkit-appearance")
+  const expect = 484
+
+  t.is (actual, expect)
+})
+
+ava ("given a string with a prefixed property name (2)", (t) => {
+  const actual = getPropertyId ("MozUserSelect")
+  const expect = 483
+
+  t.is (actual, expect)
+})
