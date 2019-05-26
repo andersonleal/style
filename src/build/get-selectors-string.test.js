@@ -60,37 +60,11 @@ ava ("given an object with multiple selectors (1)", (t) => {
 })
 
 ava ("given an object with multiple selectors (2)", (t) => {
-  const actual = getSelectorsString (
-    {
-      "selectors": [[".abcde"], [".fghij"]]
-    },
-    false
-  )
-
-  const expect = ".abcde, .fghij"
-
-  t.is (actual, expect)
-})
-
-ava ("given an object with multiple selectors (3)", (t) => {
   const actual = getSelectorsString ({
     "selectors": [[".abcde", ":hover"], [".fghij"]]
   })
 
   const expect = ".abcde:hover,.fghij"
-
-  t.is (actual, expect)
-})
-
-ava ("given an object with multiple selectors (4)", (t) => {
-  const actual = getSelectorsString (
-    {
-      "selectors": [[".abcde", ":hover"], [".fghij"]]
-    },
-    false
-  )
-
-  const expect = ".abcde:hover, .fghij"
 
   t.is (actual, expect)
 })
