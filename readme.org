@@ -31,6 +31,7 @@
     - [[#client][Client]]
       - [[#canusedom][canUseDom]]
       - [[#getstyleelement][getStyleElement]]
+      - [[#insertrule][insertRule]]
       - [[#update][update]]
     - [[#parse][Parse]]
       - [[#parsefallbacks][parseFallbacks]]
@@ -453,6 +454,7 @@ export { getStyle } from "../build/get-style.js"
 export { getStyles } from "../build/get-styles.js"
 export { canUseDom } from "../client/can-use-dom.js"
 export { getStyleElement } from "../client/get-style-element.js"
+export { insertRule } from "../client/insert-rule.js"
 export { update } from "../client/update.js"
 export { parse } from "../parse/parse.js"
 export { parseFallbacks } from "../parse/parse-fallbacks.js"
@@ -2382,6 +2384,43 @@ ava.serial (
   }
 )
 /* eslint-enable max-len */
+#+end_src
+#+HTML: </details>
+
+**** insertRule
+
+#+HTML: <details>
+#+begin_src js :tangle src/client/insert-rule.js
+import { canUseDom, getStyle, getStyleElement, isDef } from "../api/index.js"
+
+/* istanbul ignore next */
+
+export function insertRule (params = {}) {
+  if (canUseDom) {
+    const sheet = getStyleElement ().sheet
+    const style = getStyle (params, true)
+
+    if (isDef (sheet) && style) {
+      sheet.insertRule (style, sheet.cssRules.length)
+    }
+  }
+
+  return params
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/client/insert-rule.test.js
+import ava from "ava"
+import { insertRule } from "./insert-rule.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = insertRule ()
+  const expect = {}
+
+  t.deepEqual (actual, expect)
+})
 #+end_src
 #+HTML: </details>
 
