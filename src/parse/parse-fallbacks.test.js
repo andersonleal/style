@@ -44,44 +44,6 @@ ava (
   }
 )
 
-ava (
-  "given an object with backgroundImage property and array value (2)",
-  (t) => {
-    const actual = parseFallbacks (
-      {
-        "property": "backgroundImage",
-        "value": [
-          "url(https://mdn.mozillademos.org/files/11305/firefox.png)",
-          "url(https://mdn.mozillademos.org/files/11307/bubbles.png)",
-          "linear-gradient(to right, rgba(30, 75, 115, 1)",
-          "rgba(255, 255, 255, 0))"
-        ]
-      },
-      false
-    )
-
-    const expect = [
-      {
-        "block": [
-          {
-            "background-image":
-              "url(https://mdn.mozillademos.org/files/11305/firefox.png), url(https://mdn.mozillademos.org/files/11307/bubbles.png), linear-gradient(to right, rgba(30, 75, 115, 1), rgba(255, 255, 255, 0))"
-          }
-        ],
-        "property": "backgroundImage",
-        "value": [
-          "url(https://mdn.mozillademos.org/files/11305/firefox.png)",
-          "url(https://mdn.mozillademos.org/files/11307/bubbles.png)",
-          "linear-gradient(to right, rgba(30, 75, 115, 1)",
-          "rgba(255, 255, 255, 0))"
-        ]
-      }
-    ]
-
-    t.deepEqual (actual, expect)
-  }
-)
-
 /* eslint-disable max-lines-per-function */
 ava ("given an object with fontFamily property and array value (1)", (t) => {
   const actual = parseFallbacks ({
@@ -136,83 +98,6 @@ ava ("given an object with fontFamily property and array value (1)", (t) => {
       "block": [
         {
           "font-family": "Avenir,Helvetica,Arial,c53zz"
-        }
-      ],
-      "property": "fontFamily",
-      "value": [
-        {
-          "fontFamily": "Avenir",
-          "src": "url('/fonts/avenir.woff') format('woff')"
-        },
-        "Helvetica",
-        "Arial",
-        {
-          "fontFamily": "c53zz",
-          "src": "url('/fonts/font-2.woff') format('woff')"
-        }
-      ]
-    }
-  ]
-
-  t.deepEqual (actual, expect)
-})
-
-ava ("given an object with fontFamily property and array value (2)", (t) => {
-  const actual = parseFallbacks (
-    {
-      "property": "fontFamily",
-      "value": [
-        {
-          "fontFamily": "Avenir",
-          "src": "url('/fonts/avenir.woff') format('woff')"
-        },
-        "Helvetica",
-        "Arial",
-        {
-          "src": "url('/fonts/font-2.woff') format('woff')"
-        }
-      ]
-    },
-    false
-  )
-
-  const expect = [
-    {
-      "block": [
-        {
-          "font-family": "Avenir"
-        },
-        {
-          "src": "url('/fonts/avenir.woff') format('woff')"
-        }
-      ],
-      "emit": false,
-      "identifier": "c5lkw",
-      "media": "",
-      "property": "fontFamily",
-      "selectors": [["@font-face"]],
-      "value": "Avenir"
-    },
-    {
-      "block": [
-        {
-          "src": "url('/fonts/font-2.woff') format('woff')"
-        },
-        {
-          "font-family": "c53zz"
-        }
-      ],
-      "emit": false,
-      "identifier": "c53zz",
-      "media": "",
-      "property": "fontFamily",
-      "selectors": [["@font-face"]],
-      "value": "c53zz"
-    },
-    {
-      "block": [
-        {
-          "font-family": "Avenir, Helvetica, Arial, c53zz"
         }
       ],
       "property": "fontFamily",

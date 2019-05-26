@@ -1,7 +1,7 @@
 import { isObj, kebabCase, merge, parseFontFace } from "../api/index.js"
 
 /* eslint-disable max-lines-per-function */
-export function parseFallbacks (params = {}, compact = true) {
+export function parseFallbacks (params = {}) {
   const value = params.value
 
   if (Array.isArray (value)) {
@@ -14,7 +14,7 @@ export function parseFallbacks (params = {}, compact = true) {
       case "backgroundImage":
         block = [
           {
-            [kebabCase (property)]: value.join (compact ? "," : ", ")
+            [kebabCase (property)]: value.join (",")
           }
         ]
         break
@@ -36,7 +36,7 @@ export function parseFallbacks (params = {}, compact = true) {
 
                 return fonts.concat (font)
               }, [])
-              .join (compact ? "," : ", ")
+              .join (",")
           }
         ]
         break
