@@ -23,23 +23,6 @@ ava ("given a block with simple property and value", (t) => {
   t.is (actual, expect)
 })
 
-ava ("given a block with simple property and value (compact false)", (t) => {
-  const actual = getBlockString (
-    {
-      "block": [
-        {
-          "background-color": "#f00"
-        }
-      ]
-    },
-    false
-  )
-
-  const expect = "background-color: #f00"
-
-  t.is (actual, expect)
-})
-
 ava ("given a block with fallback properties and value", (t) => {
   const actual = getBlockString ({
     "block": [
@@ -57,30 +40,6 @@ ava ("given a block with fallback properties and value", (t) => {
   t.is (actual, expect)
 })
 
-ava (
-  "given a block with fallback properties and value (compact false)",
-  (t) => {
-    const actual = getBlockString (
-      {
-        "block": [
-          {
-            "background-color": "#f00"
-          },
-          {
-            "background-color": "rgba(255, 0, 0, 0.9)"
-          }
-        ]
-      },
-      false
-    )
-
-    const expect =
-      "background-color: #f00; background-color: rgba(255, 0, 0, 0.9)"
-
-    t.is (actual, expect)
-  }
-)
-
 ava ("given a block with keyframes object", (t) => {
   const actual = getBlockString ({
     "block": [
@@ -91,23 +50,6 @@ ava ("given a block with keyframes object", (t) => {
 
   const expect =
     "0%{background-color:#f00;opacity:0}100%{background-color:#0f0;opacity:1}"
-
-  t.is (actual, expect)
-})
-
-ava ("given a block with keyframes object (compact false)", (t) => {
-  const actual = getBlockString (
-    {
-      "block": [
-        { "0%": { "backgroundColor": "#f00", "opacity": 0 } },
-        { "100%": { "backgroundColor": "#0f0", "opacity": 1 } }
-      ]
-    },
-    false
-  )
-
-  const expect =
-    "0% { background-color: #f00; opacity: 0 } 100% { background-color: #0f0; opacity: 1 }"
 
   t.is (actual, expect)
 })

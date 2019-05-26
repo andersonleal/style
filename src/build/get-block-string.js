@@ -1,9 +1,9 @@
 import { isObj, kebabCase, toPairs } from "../api/index.js"
 
-export function getBlockString (params = {}, compact = true) {
+export function getBlockString (params = {}) {
   const block = params.block || []
 
-  let semi = compact ? ";" : "; "
+  let sep = ";"
 
   return block
     .map (function (rule) {
@@ -14,22 +14,17 @@ export function getBlockString (params = {}, compact = true) {
         if (isObj (value)) {
           const a = toPairs (value)
             .map (function (b) {
-              return kebabCase (b[0]).concat (compact ? ":" : ": ", b[1])
+              return kebabCase (b[0]).concat (":", b[1])
             })
-            .join (compact ? ";" : "; ")
+            .join (";")
 
-          semi = compact ? "" : " "
+          sep = ""
 
-          return "".concat (
-            property,
-            compact ? "{" : " { ",
-            a,
-            compact ? "}" : " }"
-          )
+          return "".concat (property, "{", a, "}")
         }
 
-        return "".concat (property, compact ? ":" : ": ", value)
+        return "".concat (property, ":", value)
       })
     })
-    .join (semi)
+    .join (sep)
 }

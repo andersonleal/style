@@ -604,10 +604,10 @@ ava ("given an array of selectors with array of ancestors", (t) => {
 #+begin_src js :tangle src/build/get-block-string.js
 import { isObj, kebabCase, toPairs } from "../api/index.js"
 
-export function getBlockString (params = {}, compact = true) {
+export function getBlockString (params = {}) {
   const block = params.block || []
 
-  let semi = compact ? ";" : "; "
+  let sep = ";"
 
   return block
     .map (function (rule) {
@@ -618,24 +618,19 @@ export function getBlockString (params = {}, compact = true) {
         if (isObj (value)) {
           const a = toPairs (value)
             .map (function (b) {
-              return kebabCase (b[0]).concat (compact ? ":" : ": ", b[1])
+              return kebabCase (b[0]).concat (":", b[1])
             })
-            .join (compact ? ";" : "; ")
+            .join (";")
 
-          semi = compact ? "" : " "
+          sep = ""
 
-          return "".concat (
-            property,
-            compact ? "{" : " { ",
-            a,
-            compact ? "}" : " }"
-          )
+          return "".concat (property, "{", a, "}")
         }
 
-        return "".concat (property, compact ? ":" : ": ", value)
+        return "".concat (property, ":", value)
       })
     })
-    .join (semi)
+    .join (sep)
 }
 #+end_src
 #+HTML: </details>
@@ -667,23 +662,6 @@ ava ("given a block with simple property and value", (t) => {
   t.is (actual, expect)
 })
 
-ava ("given a block with simple property and value (compact false)", (t) => {
-  const actual = getBlockString (
-    {
-      "block": [
-        {
-          "background-color": "#f00"
-        }
-      ]
-    },
-    false
-  )
-
-  const expect = "background-color: #f00"
-
-  t.is (actual, expect)
-})
-
 ava ("given a block with fallback properties and value", (t) => {
   const actual = getBlockString ({
     "block": [
@@ -701,30 +679,6 @@ ava ("given a block with fallback properties and value", (t) => {
   t.is (actual, expect)
 })
 
-ava (
-  "given a block with fallback properties and value (compact false)",
-  (t) => {
-    const actual = getBlockString (
-      {
-        "block": [
-          {
-            "background-color": "#f00"
-          },
-          {
-            "background-color": "rgba(255, 0, 0, 0.9)"
-          }
-        ]
-      },
-      false
-    )
-
-    const expect =
-      "background-color: #f00; background-color: rgba(255, 0, 0, 0.9)"
-
-    t.is (actual, expect)
-  }
-)
-
 ava ("given a block with keyframes object", (t) => {
   const actual = getBlockString ({
     "block": [
@@ -735,23 +689,6 @@ ava ("given a block with keyframes object", (t) => {
 
   const expect =
     "0%{background-color:#f00;opacity:0}100%{background-color:#0f0;opacity:1}"
-
-  t.is (actual, expect)
-})
-
-ava ("given a block with keyframes object (compact false)", (t) => {
-  const actual = getBlockString (
-    {
-      "block": [
-        { "0%": { "backgroundColor": "#f00", "opacity": 0 } },
-        { "100%": { "backgroundColor": "#0f0", "opacity": 1 } }
-      ]
-    },
-    false
-  )
-
-  const expect =
-    "0% { background-color: #f00; opacity: 0 } 100% { background-color: #0f0; opacity: 1 }"
 
   t.is (actual, expect)
 })
