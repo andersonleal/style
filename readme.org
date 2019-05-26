@@ -26,6 +26,7 @@
       - [[#getselectors][getSelectors]]
       - [[#getselectorsstring][getSelectorsString]]
       - [[#getstringhash][getStringHash]]
+      - [[#getstyle][getStyle]]
       - [[#getstyles][getStyles]]
     - [[#client][Client]]
       - [[#canusedom][canUseDom]]
@@ -448,6 +449,7 @@ export { getPropertyId } from "../build/get-property-id.js"
 export { getSelectors } from "../build/get-selectors.js"
 export { getSelectorsString } from "../build/get-selectors-string.js"
 export { getStringHash } from "../build/get-string-hash.js"
+export { getStyle } from "../build/get-style.js"
 export { getStyles } from "../build/get-styles.js"
 export { canUseDom } from "../client/can-use-dom.js"
 export { getStyleElement } from "../client/get-style-element.js"
@@ -1932,6 +1934,100 @@ ava ("given a simple string (2)", (t) => {
 #+end_src
 #+HTML: </details>
 
+**** getStyle
+
+#+HTML: <details>
+#+begin_src js :tangle src/build/get-style.js
+import { getBlockString, getSelectorsString, isDef } from "../api/index.js"
+
+export function getStyle (params = {}, mq = false) {
+  const media = mq && params.media
+  const property = params.property
+
+  return (/^%/u).test (property) || !isDef (property)
+    ? null
+    : "".concat (
+      media ? "@media ".concat (media, "{") : "",
+      getSelectorsString (params),
+      "{",
+      getBlockString (params),
+      "}",
+      media ? "}" : ""
+    )
+}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/build/get-style.test.js
+import ava from "ava"
+import { getStyle } from "./get-style.js"
+
+ava ("given undefined arguments", (t) => {
+  const actual = getStyle ()
+  const expect = null
+
+  t.is (actual, expect)
+})
+
+ava ("given an object with valid params", (t) => {
+  const actual = getStyle ({
+    "block": [{ "background-color": "#f00" }],
+    "property": "backgroundColor",
+    "selectors": [[".jt2a9"]]
+  })
+
+  const expect = ".jt2a9{background-color:#f00}"
+
+  t.is (actual, expect)
+})
+
+ava ("given an object with valid params and mq = true", (t) => {
+  const actual = getStyle (
+    {
+      "block": [{ "background-color": "#f00" }],
+      "property": "backgroundColor",
+      "selectors": [[".jt2a9"]]
+    },
+    true
+  )
+
+  const expect = ".jt2a9{background-color:#f00}"
+
+  t.is (actual, expect)
+})
+
+ava ("given an object with valid params and media", (t) => {
+  const actual = getStyle ({
+    "block": [{ "background-color": "#f00" }],
+    "media": "(min-width: 768px)",
+    "property": "backgroundColor",
+    "selectors": [[".jt2a9"]]
+  })
+
+  const expect = ".jt2a9{background-color:#f00}"
+
+  t.is (actual, expect)
+})
+
+ava ("given an object with valid params, media, mq = true", (t) => {
+  const actual = getStyle (
+    {
+      "block": [{ "background-color": "#f00" }],
+      "media": "(min-width: 768px)",
+      "property": "backgroundColor",
+      "selectors": [[".jt2a9"]]
+    },
+    true
+  )
+
+  const expect = "@media (min-width: 768px){.jt2a9{background-color:#f00}}"
+
+  t.is (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
 **** getStyles
 
 #+HTML: <details>
@@ -2057,9 +2153,7 @@ export const getStyleElement = (function () {
 
   return function (media = "") {
     if (typeof styles === "undefined") {
-      styles = document.querySelectorAll (
-        "style[data-creator='@amory/style']"
-      )
+      styles = document.querySelectorAll ("style[data-creator='@amory/style']")
     }
 
     let style
@@ -2079,9 +2173,7 @@ export const getStyleElement = (function () {
 
     document.head.appendChild (style)
 
-    styles = document.querySelectorAll (
-      "style[data-creator='@amory/style']"
-    )
+    styles = document.querySelectorAll ("style[data-creator='@amory/style']")
 
     return style
   }

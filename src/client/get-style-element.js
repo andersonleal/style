@@ -5,9 +5,7 @@ export const getStyleElement = (function () {
 
   return function (media = "") {
     if (typeof styles === "undefined") {
-      styles = document.querySelectorAll (
-        "style[data-creator='@amory/style']"
-      )
+      styles = document.querySelectorAll ("style[data-creator='@amory/style']")
     }
 
     let style
@@ -27,9 +25,7 @@ export const getStyleElement = (function () {
 
     document.head.appendChild (style)
 
-    styles = document.querySelectorAll (
-      "style[data-creator='@amory/style']"
-    )
+    styles = document.querySelectorAll ("style[data-creator='@amory/style']")
 
     return style
   }
