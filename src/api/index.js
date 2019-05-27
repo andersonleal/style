@@ -42,4 +42,5 @@ export {
   mergeArr,
   mergeObj
 } from "../utils/merge.js"
+export { pubSub } from "../utils/pub-sub.js"
 export { toPairs } from "../utils/to-pairs.js"
