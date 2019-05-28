@@ -1,6 +1,14 @@
 import ava from "ava"
+import { css } from "../api/css.js"
 import { cache } from "../store/cache.js"
 import { getStyles } from "./get-styles.js"
+
+ava.serial ("given undefined arguments", (t) => {
+  const actual = getStyles ()
+  const expect = ""
+
+  t.is (actual, expect)
+})
 
 ava.serial ("given an object with placeholder property", (t) => {
   cache ({
@@ -41,6 +49,24 @@ ava.serial ("given an object with simple property and value", (t) => {
   t.is (actual, expect)
 })
 
+/* eslint-disable sort-keys */
+ava.serial ("given a sample declaration", (t) => {
+  css ({
+    "backgroundColor": "#0f0",
+    "@media (min-width: 768px)": {
+      "backgroundColor": "#f00"
+    }
+  })
+
+  const actual = getStyles ()
+
+  const expect =
+    ".jt2a9{background-color:#f00}.jtz4h{background-color:#0f0}@media (min-width: 768px){.jtdpi{background-color:#f00}}"
+
+  t.is (actual, expect)
+})
+/* eslint-enable sort-keys */
+
 ava.serial ("given an object with simple property and value (2)", (t) => {
   cache ({
     "block": [
@@ -61,7 +87,7 @@ ava.serial ("given an object with simple property and value (2)", (t) => {
 
   const actual = getStyles ()
 
-  const expect = ".jt2a9,.jtdzh:hover{background-color:#f00}"
+  const expect = ".jt2a9,.jtdzh:hover{background-color:#f00}.jtz4h{background-color:#0f0}@media (min-width: 768px){.jtdpi{background-color:#f00}}"
 
   t.is (actual, expect)
 })

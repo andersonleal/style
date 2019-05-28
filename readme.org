@@ -14,7 +14,6 @@
     - [[#api][API]]
       - [[#create][create]]
       - [[#css][css]]
-      - [[#getcss][getCss]]
       - [[#index][index]]
       - [[#style][style]]
     - [[#build][Build]]
@@ -62,7 +61,7 @@
 **** pages/_document.js
 
 #+begin_src js
-import { getCss } from "@amory/style"
+import { getStyles } from "@amory/style"
 import Document from "next/document"
 import React from "react"
 
@@ -78,7 +77,7 @@ export default class extends Document {
         <React.Fragment>
           {initialProps.styles}
           <style
-            dangerouslySetInnerHTML={{ __html: getCss() }}
+            dangerouslySetInnerHTML={{ __html: getStyles () }}
             data-creator="@amory/style" />
         </React.Fragment>
       )
@@ -381,68 +380,12 @@ ava ("given an object with simple declarations", (t) => {
 #+end_src
 #+HTML: </details>
 
-**** getCss
-
-#+HTML: <details>
-#+begin_src js :tangle src/api/get-css.js
-import { getStyles, store } from "../api/index.js"
-
-export function getCss () {
-  const styles = []
-
-  for (const media of store.keys ()) {
-    styles.push (
-      media ? "@media ".concat (media, "{") : "",
-      getStyles (media),
-      media ? "}" : ""
-    )
-  }
-
-  return styles.join ("")
-}
-#+end_src
-#+HTML: </details>
-
-#+HTML: <details>
-#+begin_src js :tangle src/api/get-css.test.js
-import ava from "ava"
-import { css } from "./css.js"
-import { getCss } from "./get-css.js"
-
-ava ("given undefined arguments", (t) => {
-  const actual = getCss ()
-  const expect = ""
-
-  t.is (actual, expect)
-})
-
-/* eslint-disable sort-keys */
-ava ("given a sample declaration", (t) => {
-  css ({
-    "backgroundColor": "#0f0",
-    "@media (min-width: 768px)": {
-      "backgroundColor": "#f00"
-    }
-  })
-
-  const actual = getCss ()
-
-  const expect =
-    ".jtz4h{background-color:#0f0}@media (min-width: 768px){.jtdpi{background-color:#f00}}"
-
-  t.is (actual, expect)
-})
-/* eslint-enable sort-keys */
-#+end_src
-#+HTML: </details>
-
 **** index
 
 #+HTML: <details>
 #+begin_src js :tangle src/api/index.js
 export { create } from "./create.js"
 export { css } from "./css.js"
-export { getCss } from "./get-css.js"
 export { getAncestors } from "../build/get-ancestors.js"
 export { getBlockString } from "../build/get-block-string.js"
 export { getClassName } from "../build/get-class-name.js"
@@ -495,7 +438,7 @@ export { toPairs } from "../utils/to-pairs.js"
 #+begin_src js :tangle src/api/style.js
 export { create } from "./create.js"
 export { css } from "./css.js"
-export { getCss } from "./get-css.js"
+export { getStyles } from "../build/get-styles.js"
 export { merge } from "../utils/merge.js"
 #+end_src
 #+HTML: </details>
@@ -2036,20 +1979,29 @@ ava ("given an object with valid params, media, mq = true", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/build/get-styles.js
-import { getBlockString, getSelectorsString, store } from "../api/index.js"
+import { getStyle, store } from "../api/index.js"
 
-export function getStyles (media = "") {
-  const styles = []
+export function getStyles () {
+  let results = []
 
-  store.get (media).forEach (function (style) {
-    if (!(/^%/u).test (style.property)) {
-      styles.push (
-        "".concat (getSelectorsString (style), "{", getBlockString (style), "}")
-      )
+  store.forEach (function (rules, media) {
+    let styles = []
+
+    rules.forEach (function (style) {
+      styles.push (getStyle (style))
+    })
+
+    styles = styles.sort ()
+
+    if (media) {
+      styles.unshift ("@media ".concat (media, "{"))
+      styles.push ("}")
     }
+
+    results = results.concat (styles)
   })
 
-  return styles.sort ().join ("")
+  return results.filter (Boolean).join ("")
 }
 #+end_src
 #+HTML: </details>
@@ -2057,8 +2009,16 @@ export function getStyles (media = "") {
 #+HTML: <details>
 #+begin_src js :tangle src/build/get-styles.test.js
 import ava from "ava"
+import { css } from "../api/css.js"
 import { cache } from "../store/cache.js"
 import { getStyles } from "./get-styles.js"
+
+ava.serial ("given undefined arguments", (t) => {
+  const actual = getStyles ()
+  const expect = ""
+
+  t.is (actual, expect)
+})
 
 ava.serial ("given an object with placeholder property", (t) => {
   cache ({
@@ -2099,6 +2059,24 @@ ava.serial ("given an object with simple property and value", (t) => {
   t.is (actual, expect)
 })
 
+/* eslint-disable sort-keys */
+ava.serial ("given a sample declaration", (t) => {
+  css ({
+    "backgroundColor": "#0f0",
+    "@media (min-width: 768px)": {
+      "backgroundColor": "#f00"
+    }
+  })
+
+  const actual = getStyles ()
+
+  const expect =
+    ".jt2a9{background-color:#f00}.jtz4h{background-color:#0f0}@media (min-width: 768px){.jtdpi{background-color:#f00}}"
+
+  t.is (actual, expect)
+})
+/* eslint-enable sort-keys */
+
 ava.serial ("given an object with simple property and value (2)", (t) => {
   cache ({
     "block": [
@@ -2119,7 +2097,7 @@ ava.serial ("given an object with simple property and value (2)", (t) => {
 
   const actual = getStyles ()
 
-  const expect = ".jt2a9,.jtdzh:hover{background-color:#f00}"
+  const expect = ".jt2a9,.jtdzh:hover{background-color:#f00}.jtz4h{background-color:#0f0}@media (min-width: 768px){.jtdpi{background-color:#f00}}"
 
   t.is (actual, expect)
 })

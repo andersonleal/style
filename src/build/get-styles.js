@@ -1,15 +1,24 @@
-import { getBlockString, getSelectorsString, store } from "../api/index.js"
+import { getStyle, store } from "../api/index.js"
 
-export function getStyles (media = "") {
-  const styles = []
+export function getStyles () {
+  let results = []
 
-  store.get (media).forEach (function (style) {
-    if (!(/^%/u).test (style.property)) {
-      styles.push (
-        "".concat (getSelectorsString (style), "{", getBlockString (style), "}")
-      )
+  store.forEach (function (rules, media) {
+    let styles = []
+
+    rules.forEach (function (style) {
+      styles.push (getStyle (style))
+    })
+
+    styles = styles.sort ()
+
+    if (media) {
+      styles.unshift ("@media ".concat (media, "{"))
+      styles.push ("}")
     }
+
+    results = results.concat (styles)
   })
 
-  return styles.sort ().join ("")
+  return results.filter (Boolean).join ("")
 }

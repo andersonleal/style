@@ -1,6 +1,5 @@
 export { create } from "./create.js"
 export { css } from "./css.js"
-export { getCss } from "./get-css.js"
 export { getAncestors } from "../build/get-ancestors.js"
 export { getBlockString } from "../build/get-block-string.js"
 export { getClassName } from "../build/get-class-name.js"
