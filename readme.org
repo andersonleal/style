@@ -32,6 +32,7 @@
       - [[#getstyleelement][getStyleElement]]
       - [[#insertrule][insertRule]]
       - [[#update][update]]
+      - [[#updatestyles][updateStyles]]
     - [[#parse][Parse]]
       - [[#parsefallbacks][parseFallbacks]]
       - [[#parsefontface][parseFontFace]]
@@ -401,6 +402,7 @@ export { canUseDom } from "../client/can-use-dom.js"
 export { getStyleElement } from "../client/get-style-element.js"
 export { insertRule } from "../client/insert-rule.js"
 export { update } from "../client/update.js"
+export { updateStyles } from "../client/update-styles.js"
 export { parse } from "../parse/parse.js"
 export { parseFallbacks } from "../parse/parse-fallbacks.js"
 export { parseFontFace } from "../parse/parse-font-face.js"
@@ -2429,11 +2431,13 @@ return params
 
 #+HTML: <details>
 #+begin_src js :tangle src/client/update.js
-import { canUseDom, insertRule } from "../api/index.js"
+import { canUseDom, insertRule, updateStyles } from "../api/index.js"
 
 /* istanbul ignore next */
 
 export function update (params = {}) {
+  canUseDom && updateStyles ()
+
   return canUseDom ? insertRule (params) : params
 }
 #+end_src
@@ -2536,6 +2540,33 @@ ava ("2", (t) => {
 
   t.deepEqual (actual, expect)
 })
+#+end_src
+#+HTML: </details>
+
+**** updateStyles
+
+#+HTML: <details>
+#+begin_src js :tangle src/client/update-styles.js
+import { debounce, getStyleElement, getStyles } from "../api/index.js"
+
+/* istanbul ignore next */
+
+export const updateStyles = debounce (function () {
+  const style = getStyleElement ()
+  const styles = getStyles ()
+
+  style.innerHTML = styles
+}, 25)
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/client/update-styles.test.js
+import ava from "ava"
+
+// import { updateStyles } from "./update-styles.js"
+
+ava.todo ("todo")
 #+end_src
 #+HTML: </details>
 
