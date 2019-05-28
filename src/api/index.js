@@ -28,6 +28,7 @@ export { parseTypeSelector } from "../parse/parse-type-selector.js"
 export { cache } from "../store/cache.js"
 export { store } from "../store/store.js"
 export { camelCase } from "../utils/camel-case.js"
+export { debounce } from "../utils/debounce.js"
 export { kebabCase } from "../utils/kebab-case.js"
 export {
   canMerge,

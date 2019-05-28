@@ -164,5 +164,5 @@
     "test": "nyc ava",
     "tidy": "prettier-eslint --write \"src/**/*.js\""
   },
-  "version": "2019.5.26-2"
+  "version": "2019.5.28-0"
 }

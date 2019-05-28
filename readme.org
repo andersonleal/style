@@ -49,6 +49,7 @@
       - [[#store-1][store]]
     - [[#utils][Utils]]
       - [[#camelcase][camelCase]]
+      - [[#debounce][debounce]]
       - [[#kebabcase][kebabCase]]
       - [[#merge][merge]]
       - [[#pubsub][pubSub]]
@@ -414,6 +415,7 @@ export { parseTypeSelector } from "../parse/parse-type-selector.js"
 export { cache } from "../store/cache.js"
 export { store } from "../store/store.js"
 export { camelCase } from "../utils/camel-case.js"
+export { debounce } from "../utils/debounce.js"
 export { kebabCase } from "../utils/kebab-case.js"
 export {
   canMerge,
@@ -2097,7 +2099,8 @@ ava.serial ("given an object with simple property and value (2)", (t) => {
 
   const actual = getStyles ()
 
-  const expect = ".jt2a9,.jtdzh:hover{background-color:#f00}.jtz4h{background-color:#0f0}@media (min-width: 768px){.jtdpi{background-color:#f00}}"
+  const expect =
+    ".jt2a9,.jtdzh:hover{background-color:#f00}.jtz4h{background-color:#0f0}@media (min-width: 768px){.jtdpi{background-color:#f00}}"
 
   t.is (actual, expect)
 })
@@ -2426,9 +2429,25 @@ return params
 
 #+HTML: <details>
 #+begin_src js :tangle src/client/update.js
-import { insertRule } from "../api/index.js"
+import {
+  canUseDom,
+  debounce,
+  getStyleElement,
+  getStyles,
+  insertRule
+} from "../api/index.js"
+
+/* istanbul ignore next */
 
 export function update (params = {}) {
+  canUseDom &&
+    debounce (function () {
+      const style = getStyleElement ()
+      const styles = getStyles ()
+
+      style.innerHTML = styles
+    })
+
   return insertRule (params)
 }
 #+end_src
@@ -4922,6 +4941,54 @@ ava ("given a string in lowercase", (t) => {
   const expect = "background"
 
   t.is (actual, expect)
+})
+#+end_src
+#+HTML: </details>
+
+**** debounce
+
+#+HTML: <details>
+#+begin_src js :tangle src/utils/debounce.js
+/*! @copyright JS Foundation | @license MIT | @link lodash.com | @version 4.17.11 *//* eslint-disable */function t(t){var n=typeof t;return null!=t&&("object"==n||"function"==n)}var n="object"==typeof global&&global&&global.Object===Object&&global,e="object"==typeof self&&self&&self.Object===Object&&self,r=n||e||Function("return this")(),o=function(){return r.Date.now()},i=r.Symbol,u=Object.prototype,a=u.hasOwnProperty,f=u.toString,c=i?i.toStringTag:void 0;var l=Object.prototype.toString;var v="[object Null]",b="[object Undefined]",p=i?i.toStringTag:void 0;function s(t){return null==t?void 0===t?b:v:p&&p in Object(t)?function(t){var n=a.call(t,c),e=t[c];try{t[c]=void 0;var r=!0}catch(t){}var o=f.call(t);return r&&(n?t[c]=e:delete t[c]),o}(t):function(t){return l.call(t)}(t)}var d="[object Symbol]";var y=NaN,g=/^\s+|\s+$/g,j=/^[-+]0x[0-9a-f]+$/i,m=/^0b[01]+$/i,O=/^0o[0-7]+$/i,h=parseInt;function T(n){if("number"==typeof n)return n;if(function(t){return"symbol"==typeof t||function(t){return null!=t&&"object"==typeof t}(t)&&s(t)==d}(n))return y;if(t(n)){var e="function"==typeof n.valueOf?n.valueOf():n;n=t(e)?e+"":e}if("string"!=typeof n)return 0===n?n:+n;n=n.replace(g,"");var r=m.test(n);return r||O.test(n)?h(n.slice(2),r?2:8):j.test(n)?y:+n}var x="Expected a function",S=Math.max,w=Math.min;export function debounce(n,e,r){var i,u,a,f,c,l,v=0,b=!1,p=!1,s=!0;if("function"!=typeof n)throw new TypeError(x);function d(t){var e=i,r=u;return i=u=void 0,v=t,f=n.apply(r,e)}function y(t){var n=t-l;return void 0===l||n>=e||n<0||p&&t-v>=a}function g(){var t=o();if(y(t))return j(t);c=setTimeout(g,function(t){var n=e-(t-l);return p?w(n,a-(t-v)):n}(t))}function j(t){return c=void 0,s&&i?d(t):(i=u=void 0,f)}function m(){var t=o(),n=y(t);if(i=arguments,u=this,l=t,n){if(void 0===c)return function(t){return v=t,c=setTimeout(g,e),b?d(t):f}(l);if(p)return c=setTimeout(g,e),d(l)}return void 0===c&&(c=setTimeout(g,e)),f}return e=T(e)||0,t(r)&&(b=!!r.leading,a=(p="maxWait"in r)?S(T(r.maxWait)||0,e):a,s="trailing"in r?!!r.trailing:s),m.cancel=function(){void 0!==c&&clearTimeout(c),v=0,i=l=u=c=void 0},m.flush=function(){return void 0===c?f:j(o())},m}
+#+end_src
+#+HTML: </details>
+
+#+HTML: <details>
+#+begin_src js :tangle src/utils/debounce.test.js
+/* eslint-disable no-plusplus, no-undefined */
+
+import ava from "ava"
+import { debounce } from "./debounce.js"
+
+ava ("should debounce a function", (t) => {
+  let callCount = 0
+
+  function simpleFn (value) {
+    ++callCount
+    return value
+  }
+
+  simpleFn ()
+
+  const debounced = debounce (simpleFn, 32)
+
+  let results = [debounced ("a"), debounced ("b"), debounced ("c")]
+
+  t.deepEqual (results, [undefined, undefined, undefined])
+  t.is (callCount, 1)
+
+  setTimeout (function () {
+    t.is (callCount, 2)
+
+    results = [debounced ("d"), debounced ("e"), debounced ("f")]
+
+    t.deepEqual (results, ["c", "c", "c"])
+    t.is (callCount, 2)
+  }, 128)
+
+  setTimeout (function () {
+    t.is (callCount, 3)
+  }, 256)
 })
 #+end_src
 #+HTML: </details>
