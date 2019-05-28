@@ -5,7 +5,7 @@ export function parseMedia (params = {}) {
   const value = params.value
 
   if ((/^@media/u).test (property) && isObj (value)) {
-    const media = [params.media, kebabCase (property.slice (7))]
+    const media = [params.media, kebabCase (property.slice (6).trim ())]
       .filter (Boolean)
       .join (" and ")
 
