@@ -295,10 +295,12 @@ ava ("given an object with multiple 'fontFamily' declarations", (t) => {
 
 #+HTML: <details>
 #+begin_src js :tangle src/api/css.js
-import { cache, getClassName, parse, update } from "./index.js"
+import { cache, getClassName, isArr, merge, parse, update } from "./index.js"
 
-export function css (params = {}) {
-  return parse ({ "input": params })
+export function css (params) {
+  const input = isArr (params) ? merge (... params) : params
+
+  return parse ({ input })
     .map (cache)
     .map (update)
     .map (getClassName)
@@ -378,6 +380,22 @@ ava ("given an object with simple declarations", (t) => {
 
   t.is (actual1, expect1)
   t.deepEqual (actual2, expect2)
+})
+
+ava ("given an array of objects with simple declarations", (t) => {
+  const actual = css ([
+    {
+      "backgroundColor": "#f00",
+      "display": "block"
+    },
+    {
+      "backgroundColor": "#0f0"
+    }
+  ])
+
+  const expect = "jtz4h drtx9"
+
+  t.is (actual, expect)
 })
 #+end_src
 #+HTML: </details>
@@ -2551,12 +2569,15 @@ import { debounce, getStyleElement, getStyles } from "../api/index.js"
 
 /* istanbul ignore next */
 
-export const updateStyles = debounce (function () {
+export function updateStyles () {
+  // export const updateStyles = debounce (function () {
   const style = getStyleElement ()
   const styles = getStyles ()
 
   style.innerHTML = styles
-}, 25)
+
+  // }, 25)
+}
 #+end_src
 #+HTML: </details>
 

@@ -102,7 +102,7 @@ export default [
     "input": "src/api/style.js",
     "output": {
       "banner": banner,
-      "file": pkg.browser,
+      "file": "web/style.js",
       "format": "esm"
     },
     "plugins": [

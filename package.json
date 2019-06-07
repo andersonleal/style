@@ -21,7 +21,6 @@
     ],
     "verbose": true
   },
-  "browser": "web/style.js",
   "browserslist": [
     "Android >= 71",
     "Chrome >= 49",
@@ -164,5 +163,5 @@
     "test": "nyc ava",
     "tidy": "prettier-eslint --write \"src/**/*.js\""
   },
-  "version": "2019.5.28-1"
+  "version": "2019.5.31-0"
 }

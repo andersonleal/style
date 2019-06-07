@@ -67,3 +67,19 @@ ava ("given an object with simple declarations", (t) => {
   t.is (actual1, expect1)
   t.deepEqual (actual2, expect2)
 })
+
+ava ("given an array of objects with simple declarations", (t) => {
+  const actual = css ([
+    {
+      "backgroundColor": "#f00",
+      "display": "block"
+    },
+    {
+      "backgroundColor": "#0f0"
+    }
+  ])
+
+  const expect = "jtz4h drtx9"
+
+  t.is (actual, expect)
+})
