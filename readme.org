@@ -8,6 +8,7 @@
 - [[#amorystyle][@amory/style]]
   - [[#usage][Usage]]
     - [[#with-nextjs][With Next.js]]
+      - [[#pages_appjs][pages/_app.js]]
       - [[#pages_documentjs][pages/_document.js]]
   - [[#license][License]]
   - [[#source][Source]]
@@ -59,6 +60,31 @@
 ** Usage
 
 *** With Next.js
+
+**** pages/_app.js
+
+#+begin_src js
+import { getStyles } from '@amory/style'
+import App, { Container } from 'next/app'
+import React from 'react'
+
+export default class extends App {
+  componentDidMount () {
+    /* For testing purposes during development */
+    window.getStyles = getStyles
+  }
+
+  render () {
+    const { Component, pageProps } = this.props
+
+    return (
+      <Container>
+        <Component {... pageProps } />
+      </Container>
+    )
+  }
+}
+#+end_src
 
 **** pages/_document.js
 
