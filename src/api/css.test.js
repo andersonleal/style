@@ -41,6 +41,7 @@ ava ("given an object with simple declarations", (t) => {
       "input": {
         "backgroundColor": "#f00"
       },
+      "insertRule": true,
       "media": "",
       "property": "backgroundColor",
       "selectors": [[".jt2a9"]],
@@ -57,6 +58,7 @@ ava ("given an object with simple declarations", (t) => {
       "input": {
         "display": "block"
       },
+      "insertRule": true,
       "media": "",
       "property": "display",
       "selectors": [[".drtx9"]],

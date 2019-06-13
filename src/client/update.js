@@ -3,7 +3,10 @@ import { canUseDom, insertRule, updateStyles } from "../api/index.js"
 /* istanbul ignore next */
 
 export function update (params = {}) {
-  canUseDom && updateStyles ()
+  if (canUseDom && params.insertRule) {
+    updateStyles ()
+    insertRule (params)
+  }
 
-  return canUseDom ? insertRule (params) : params
+  return params
 }

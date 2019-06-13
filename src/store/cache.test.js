@@ -5,7 +5,9 @@ import { store } from "./store.js"
 ava.serial ("given undefined arguments", (t) => {
   const actual = cache ()
 
-  const expect1 = {}
+  const expect1 = {
+    "insertRule": true
+  }
   const expect2 = store.has ("")
   const expect3 = store.get ("")
 
@@ -43,6 +45,7 @@ ava.serial ("given an object with valid property and value (1)", (t) => {
     "input": {
       "background-color": "#f00"
     },
+    "insertRule": true,
     "media": "",
     "property": "backgroundColor",
     "selectors": [[".jt2a9"]],
@@ -81,6 +84,7 @@ ava.serial ("given an object with valid property and value (2)", (t) => {
     "input": {
       "background-color": "#f00"
     },
+    "insertRule": true,
     "media": "",
     "property": "backgroundColor",
     "selectors": [[".jt2a9"], [".jtdzh", ":hover"]],
@@ -119,6 +123,7 @@ ava.serial ("given an object with valid property and value (3)", (t) => {
     "input": {
       "background-color": "#f00"
     },
+    "insertRule": false,
     "media": "",
     "property": "backgroundColor",
     "selectors": [[".jt2a9"], [".jtdzh", ":hover"]],

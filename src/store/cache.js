@@ -26,6 +26,7 @@ export function cache (params = {}) {
           "selectors": null
         },
         {
+          "insertRule": addSelector,
           "selectors": (addSelector
             ? style.selectors.concat (params.selectors)
             : style.selectors
@@ -36,7 +37,7 @@ export function cache (params = {}) {
       )
     )
   } else {
-    store.get (media).set (key, params)
+    store.get (media).set (key, merge (params, { "insertRule": true }))
   }
 
   return store.get (media).get (key)
