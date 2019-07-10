@@ -12,6 +12,11 @@ export function parseFallbacks (params = {}) {
 
     switch (property) {
       case "backgroundImage":
+      case "backgroundPosition":
+      case "backgroundPositionX":
+      case "backgroundPositionY":
+      case "backgroundRepeat":
+      case "backgroundSize":
         block = [
           {
             [kebabCase (property)]: value.join (",")
