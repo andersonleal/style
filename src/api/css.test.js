@@ -85,3 +85,13 @@ ava ("given an array of objects with simple declarations", (t) => {
 
   t.is (actual, expect)
 })
+
+ava ("given an object with simple declarations and class name strings", (t) => {
+  const actual = css ({
+    "backgroundColor": "#0f0"
+  }, "button large")
+
+  const expect = "jtz4h button large"
+
+  t.is (actual, expect)
+})
