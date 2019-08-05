@@ -20,7 +20,7 @@ export function getSelectors (selectors = "") {
       "(%".concat (identifier, ")"),
       "(\\^".concat (identifier, ")"),
       "(\\[[-$*0-9=A-Z^_a-z|~\\u{00a0}-\\u{ffff}]+\\])",
-      "(::?".concat (identifier, ")"),
+      "(::?".concat ("(?:", identifier, "|[(+)]|[0-9])+", ")"),
 
       "(".concat (identifier, ")"),
 

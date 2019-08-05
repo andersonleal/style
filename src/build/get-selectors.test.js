@@ -61,9 +61,23 @@ ava ("given a string with an attribute selector (2)", (t) => {
   t.deepEqual (actual, expect)
 })
 
-ava ("given a string with a pseudo-class selector", (t) => {
+ava ("given a string with a pseudo-class selector (1)", (t) => {
   const actual = getSelectors (":first-child")
   const expect = [[":first-child"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with a pseudo-class selector (2)", (t) => {
+  const actual = getSelectors (":nth-child(3n+1)")
+  const expect = [[":nth-child(3n+1)"]]
+
+  t.deepEqual (actual, expect)
+})
+
+ava ("given a string with a pseudo-class selector (3)", (t) => {
+  const actual = getSelectors (":is(header) p:hover")
+  const expect = [[":is(header)", " ", "p", ":hover"]]
 
   t.deepEqual (actual, expect)
 })
