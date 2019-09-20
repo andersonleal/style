@@ -97,8 +97,8 @@
   ],
   "files": [
     "esm/style.js",
-    "react/circle.js",
-    "react/icon.js",
+    "src/react/circle.js",
+    "src/react/icon.js",
     "umd/style.js",
     "web/style.js"
   ],
@@ -180,5 +180,5 @@
       "path": "web/style.js"
     }
   ],
-  "version": "2019.9.20-0"
+  "version": "2019.9.20-1"
 }
