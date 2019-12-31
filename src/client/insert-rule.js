@@ -8,7 +8,15 @@ export function insertRule (params = {}) {
     const style = getStyle (params, true)
 
     if (isDef (sheet) && style) {
-      sheet.insertRule (style, sheet.cssRules.length)
+      const rules = Array.prototype.slice
+        .call (sheet.cssRules)
+        .map (({ cssText }) => cssText)
+        .concat (style)
+        .sort ()
+
+      const index = rules.indexOf (style)
+
+      sheet.insertRule (style, index)
     }
   }
 

@@ -17,8 +17,11 @@ export function getStyles () {
       styles.push ("}")
     }
 
-    results = results.concat (styles)
+    results = results.concat (styles.join (""))
   })
 
-  return results.filter (Boolean).join ("")
+  return results
+    .filter (Boolean)
+    .sort ()
+    .join ("")
 }

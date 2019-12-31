@@ -10,7 +10,7 @@ import {
   getStyles,
   parse,
   store
-} from "./style.js"
+} from "../../src/api/index.js"
 
 import cssbeautify from "./cssbeautify.js"
 import { isJSON } from "./is-json.js"
