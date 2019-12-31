@@ -23,7 +23,7 @@ ava ("given an object with simple declarations", (t) => {
 
   const expect = {
     "banner": "drtx9 dtndl",
-    "product": "jk2a9 dr4gk"
+    "product": "dr4gk jk2a9"
   }
 
   t.deepEqual (actual, expect)

@@ -25,7 +25,7 @@ ava ("given an object with simple declarations", (t) => {
     "display": "block"
   })
 
-  const expect1 = "jt2a9 drtx9"
+  const expect1 = "drtx9 jt2a9"
 
   const actual2 = strMapToObj (store.get (""))
 
@@ -81,7 +81,7 @@ ava ("given an array of objects with simple declarations", (t) => {
     }
   ])
 
-  const expect = "jtz4h drtx9"
+  const expect = "drtx9 jtz4h"
 
   t.is (actual, expect)
 })
@@ -91,7 +91,7 @@ ava ("given an object with simple declarations and class name strings", (t) => {
     "backgroundColor": "#0f0"
   }, "button large")
 
-  const expect = "jtz4h button large"
+  const expect = "button large jtz4h"
 
   t.is (actual, expect)
 })

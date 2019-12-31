@@ -9,5 +9,6 @@ export function css (params, className) {
     .map (getClassName)
     .concat (className)
     .filter (Boolean)
+    .sort ()
     .join (" ")
 }
