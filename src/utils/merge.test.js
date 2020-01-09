@@ -8,6 +8,14 @@ ava ("given undefined arguments", (t) => {
   t.deepEqual (actual, expect)
 })
 
+ava ("given an array with undefined arguments", (t) => {
+  /* eslint-disable-next-line no-undefined */
+  const actual = merge ({ "a": "b" }, undefined, { "c": "d" })
+  const expect = { "a": "b", "c": "d" }
+
+  t.deepEqual (actual, expect)
+})
+
 ava ("given an array as value", (t) => {
   const actual = emptyObj (["a"])
   const expect = []

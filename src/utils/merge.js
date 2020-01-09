@@ -66,7 +66,9 @@ export function mergeObj (target, source) {
 
 export function merge (... sources) {
   return sources.reduce (function (target, source) {
-    if (isArr (source)) {
+    if (!isDef (source)) {
+      return target
+    } else if (isArr (source)) {
       return mergeArr (target, source)
     } else if (canMerge (source)) {
       return mergeObj (target, source)
