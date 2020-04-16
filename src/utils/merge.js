@@ -6,6 +6,10 @@ export function isDef (value) {
   return typeof value !== "undefined"
 }
 
+export function isFunc (value) {
+  return typeof value === "function"
+}
+
 export function isNum (value) {
   return typeof value === "number"
 }

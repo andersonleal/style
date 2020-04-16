@@ -37,6 +37,7 @@ export {
   emptyObj,
   isArr,
   isDef,
+  isFunc,
   isNum,
   isObj,
   merge,

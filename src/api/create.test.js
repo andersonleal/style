@@ -46,6 +46,7 @@ ava ("given an object with simple declarations and function", (t) => {
 
   const expect = {
     "banner": "drtx9 dtndl",
+    "item": function item () {},
     "product": "dr4gk jk2a9"
   }
 
