@@ -29,6 +29,29 @@ ava ("given an object with simple declarations", (t) => {
   t.deepEqual (actual, expect)
 })
 
+ava ("given an object with simple declarations and function", (t) => {
+  const actual = create ({
+    "banner": {
+      "display": "block",
+      "width": "80%"
+    },
+    "item": (size) => ({
+      "fontSize": size
+    }),
+    "product": {
+      "color": "#f00",
+      "display": ["block", "flex", "grid"]
+    }
+  })
+
+  const expect = {
+    "banner": "drtx9 dtndl",
+    "product": "dr4gk jk2a9"
+  }
+
+  t.deepEqual (actual, expect)
+})
+
 /* eslint-disable max-lines-per-function */
 ava ("given an object with multiple 'fontFamily' declarations", (t) => {
   const fonts = {

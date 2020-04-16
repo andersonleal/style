@@ -5,7 +5,6 @@
     "url": "https://ptb.dev/"
   },
   "ava": {
-    "babel": false,
     "extensions": [
       "js"
     ],
@@ -15,9 +14,6 @@
     ],
     "require": [
       "esm"
-    ],
-    "sources": [
-      "src/**/*.js"
     ],
     "verbose": true
   },
@@ -182,5 +178,5 @@
       "path": "web/style.js"
     }
   ],
-  "version": "2020.2.1-0"
+  "version": "2020.4.16-0"
 }
