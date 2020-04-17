@@ -7,7 +7,11 @@ export function css (params, className) {
     .map (cache)
     .map (update)
     .map (getClassName)
-    .concat (className)
+    .concat (
+      isArr (className)
+        ? className.filter (Boolean).join (" ")
+        : className
+    )
     .filter (Boolean)
     .sort ()
     .join (" ")
