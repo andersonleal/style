@@ -22,7 +22,7 @@ export function parseIdentifier (params = {}) {
                 .join (",")
             )
             .concat (JSON.stringify (value))
-        ).slice (-3)
+        ).slice (-4)
 
     selectors =
       selectors.length || (/^%/u).test (property)
